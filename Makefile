@@ -42,6 +42,7 @@ LIB := -L/usr/lib\
 	-static-libgcc
 
 INC := -I/usr/include \
+	-I/usr/include/x86_64-linux-gnu \
 	-I/usr/i686-w64-ming32/include \
 	-I$(EXTERNALDIR)
 
