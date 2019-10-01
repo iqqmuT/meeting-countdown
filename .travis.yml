@@ -2,13 +2,13 @@ language: cpp
 compiler:
 - i686-w64-mingw32-g++
 before_install:
-- sudo apt-get install -y curl mingw-w64
 # Download and extract SDL dev lib for MinGW
 - curl -SL https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2-2.0.10/i686-w64-mingw32/* /usr/
 # Download and extract SDL_ttf dev lib for MinGW
 - curl -SL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2_ttf-2.0.15/i686-w64-mingw32/* /usr/
 
 script:
+- find /usr/include
 - make
 deploy:
   provider: releases
