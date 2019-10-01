@@ -3,6 +3,7 @@ language: cpp
 compiler:
 - i686-w64-mingw32-g++
 before_install:
+- sudo apt-get install -y mingw-64
 # - sudo apt-get install -y libc6-dev libc6-dev-i386
 # Download and extract SDL dev lib for MinGW
 - curl -SL https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2-2.0.10/i686-w64-mingw32/* /usr/local/
