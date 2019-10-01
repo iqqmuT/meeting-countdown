@@ -18,8 +18,8 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o)) \
 	$(EXT_OBJECTS)
 
 CFLAGS := -w -Wall
-LIB := -L/usr/lib\
-	-L/usr/bin\
+LIB := -L/usr/local/lib\
+	-L/usr/local/bin\
 	-static\
        	-lmingw32\
        	-lSDL2main\
@@ -41,7 +41,7 @@ LIB := -L/usr/lib\
 	-lfreetype\
 	-static-libgcc
 
-INC := -I/usr/include \
+INC := -I/usr/local/include \
 	-I/usr/include/x86_64-linux-gnu \
 	-I/usr/i686-w64-ming32/include \
 	-I$(EXTERNALDIR)
