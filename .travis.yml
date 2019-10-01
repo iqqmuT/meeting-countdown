@@ -9,8 +9,9 @@ before_install:
 - curl -SL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2_ttf-2.0.15/i686-w64-mingw32/* /usr/
 
 script:
-- find /usr/i686-w64-mingw32
-- find /usr/x86_64-w64-mingw32
+- find /usr -name stubs.h
+#- find /usr/i686-w64-mingw32
+#- find /usr/x86_64-w64-mingw32
 - make
 deploy:
   provider: releases
