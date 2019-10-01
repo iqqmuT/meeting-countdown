@@ -1,0 +1,22 @@
+language: cpp
+compiler:
+- clang
+- gcc
+before_install:
+- sudo apt-get install -y curl mingw-64
+# Download and extract SDL dev lib for MinGW
+- curl -SL https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz | tar -xzC /tmp && cp -R /tmp/SDL2-2.0.10/i686-w64-mingw32/* /usr
+# Download and extract SDL_ttf dev lib for MinGW
+- curl -SL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-mingw.tar.gz | tar -xzC /tmp && cp -R /tmp/SDL2_ttf-2.0.15/i686-w64-mingw32/* /usr
+
+script:
+- make
+deploy:
+  provider: releases
+  api_key:
+    secure: k4t7yomZFFIzq8yt+cd84dSnzFLrJdWA3hCyHxhIWezl2mZddZurOL6WtTnUIkkaFv6QBQKDGt6DhrrJkPoXoIuvekxYrhKKHkXdk2vBncIWnN+izM58AO1adn18NkqTij7rrCbDzPhJ+9lxSrrrkHpk6lRvNGpHG7kZSRSZkA3qqxUuLX8NlbrvOvMJYhMkbrKEMhx4/964FAypN/sHUtsTm2n4IWnCpAeJREFw3Pbep+6QJR3IH3ExUmMvTMO+DLojKZeElkqy61YxWTFDegrLspMLPz8tjoUgk4t9vFk+NVvMjqNhQVEiaFmPUd3a5mGjK49nwz0Yv56EDUU1Ap5wIZuZbWC6HcJa93dm577AVw4oJbwu2+eHsVa9+8qhbcq+u6Zr7BaBTEVMPw4yKu0dt72Rdr/RKsA1FYb6Xiq3h/M3YwwON8uWwjQwkABk+0Xkt6TgYnBI2nJvf1gkXqBkmcwJClNvKB5T2lxVq7VuA/r4NONn33awbhTNAFLbmbpkp7tf/HfKj9QFopBgFjTnOwOC8fi54QuKZq5SXH85Q9IlbVdgz6g33GHggVuxTKWk+y0cnNCaWWDcQOldfejndgjXtVxr6ftDkVc4uKvZwZZcUAOZsFAqgOZDW8MO+jOGs2ReOY7x1l+RRHGAirdivLjMYBJMchEyf0IcY4Y=
+  file: bin/meeting-countdown.exe
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: iqqmuT/meeting-countdown
