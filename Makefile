@@ -42,9 +42,7 @@ LIB := -L/usr/local/lib\
 	-static-libgcc
 
 INC := -I/usr/local/include \
-	-I/usr/include/x86_64-linux-gnu \
-	-I/usr/i686-w64-ming32/include \
-	-I/usr/lib/gcc/i686-w64-mingw32/8.3-win32/include/c++/parallel/ \
+	-I/usr/include \
 	-I$(EXTERNALDIR)
 
 $(TARGET): $(OBJECTS)
