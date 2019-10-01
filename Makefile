@@ -42,7 +42,7 @@ LIB := -L/usr/lib\
 	-static-libgcc
 
 INC := -I/usr/include \
-	-I/usr/i686-w64-ming32/include
+	-I/usr/i686-w64-ming32/include \
 	-I$(EXTERNALDIR)
 
 $(TARGET): $(OBJECTS)
