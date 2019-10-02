@@ -2,14 +2,20 @@ dist: bionic
 language: cpp
 compiler:
 - i686-w64-mingw32-g++
+
 before_install:
+# Remove libc6-dev so it won't conflict with mingw libs
 - sudo apt-get remove libc6-dev
-# - sudo apt-get install -y libc6-dev libc6-dev-i386
-# Download and extract SDL dev lib for MinGW
+
+# Download and extract development libraries under /usr/local
+
+# SDL2
 - curl -SL https://www.libsdl.org/release/SDL2-devel-2.0.10-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2-2.0.10/i686-w64-mingw32/* /usr/local/
-# Download and extract SDL_ttf dev lib for MinGW
+
+# SDL_ttf
 - curl -SL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2_ttf-2.0.15/i686-w64-mingw32/* /usr/local/
-# Download and extract Freetype dev lib for MinGW
+
+# Freetype
 - curl -SL https://sourceforge.net/projects/gnuwin32/files/freetype/2.3.5-1/freetype-2.3.5-1-lib.zip/download --output /tmp/freetype-2.3.5-1-lib.zip && sudo unzip /tmp/freetype-2.3.5-1-lib.zip -d /usr/local/
 
 script:
