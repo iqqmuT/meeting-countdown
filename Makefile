@@ -18,6 +18,8 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o)) \
 	$(EXT_OBJECTS)
 
 CFLAGS := -w -Wall
+
+# Note: ordering is important!
 LIB := -L/usr/local/lib\
 	-L/usr/local/bin\
 	-L/usr/i686-w64-mingw32/lib\
@@ -27,8 +29,8 @@ LIB := -L/usr/local/lib\
        	-lSDL2\
 	-lSDL2_ttf\
 	-lfreetype\
-	-lz\
 	-lpng\
+	-lz\
 	-luser32\
 	-lgdi32\
 	-lwinmm\
