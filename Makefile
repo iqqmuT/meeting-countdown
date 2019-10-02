@@ -28,6 +28,7 @@ LIB := -L/usr/local/lib\
 	-lSDL2_ttf\
 	-lfreetype\
 	-lz\
+	-lpng\
 	-luser32\
 	-lgdi32\
 	-lwinmm\

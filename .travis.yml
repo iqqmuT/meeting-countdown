@@ -14,14 +14,20 @@ before_install:
 # SDL_ttf
 - curl -SL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2_ttf-2.0.15/i686-w64-mingw32/* /usr/local/
 
-# Download sources from zlib
+# Download sources for zlib
 - curl -SL http://zlib.net/zlib-1.2.11.tar.gz | tar -xz
+
+# Download source for libpng
+- curl -SL http://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/libpng-1.6.37.tar.gz | tar -xz
 
 # Download sources from freetype
 - curl -SL http://downloads.sourceforge.net/project/freetype/freetype2/2.8/freetype-2.8.tar.gz | tar -xz
 
 install:
-# Compile and install zlib under /usr/i686-w64-mingw32/lib
+# Compile and install libraries under /usr/i686-w64-mingw32/lib
+# for linking them statically
+
+# zlib
 - cd zlib*
 # zlib 'configure' script is currently broken, use win32/Makefile.gcc directly
 - sed -e s/"PREFIX ="/"PREFIX = i686-w64-mingw32-"/ -i win32/Makefile.gcc
@@ -29,7 +35,14 @@ install:
 - sudo BINARY_PATH=/usr/i686-w64-mingw32/bin INCLUDE_PATH=/usr/i686-w64-mingw32/include LIBRARY_PATH=/usr/i686-w64-mingw32/lib make -f win32/Makefile.gcc install
 - cd ..
 
-# Compile and install freetype under /usr/i686-w64-mingw32/lib
+# libpng
+- cd libpng*
+- CC=i686-w64-mingw32-gcc ./configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32 CPPFLAGS="-I/usr/i686-w64-mingw32/include" LDFLAGS="-L/usr/i686-w64-mingw32/lib"
+- make
+- sudo make install
+- cd ..
+
+# freetype
 - cd freetype*
 - CC=i686-w64-mingw32-gcc ./configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32 --enable-static CPPFLAGS="-I/usr/i686-w64-mingw32/include" LDFLAGS="-L/usr/i686-w64-mingw32/lib" PKG_CONFIG_LIBDIR=/usr/i686-w64-mingw32/lib/pkgconfig
 - make
