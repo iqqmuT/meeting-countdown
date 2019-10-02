@@ -30,7 +30,15 @@ script:
 - sed -e s/"PREFIX ="/"PREFIX = i686-w64-mingw32-"/ -i win32/Makefile.gcc
 - make -f win32/Makefile.gcc
 - sudo BINARY_PATH=/usr/i686-w64-mingw32/bin INCLUDE_PATH=/usr/i686-w64-mingw32/include LIBRARY_PATH=/usr/i686-w64-mingw32/lib make -f win32/Makefile.gcc install
- 
+- cd ..
+
+# Compile and install freetype under /usr/i686-w64-mingw32/lib
+- cd freetype*
+- ./configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32 --enable-static CPPFLAGS="-I/usr/i686-w64-mingw32/include" LDFLAGS="-L/usr/i686-w64-mingw32/lib" PKG_CONFIG_LIBDIR=/usr/i686-w64-mingw32/lib/pkgconfig
+- make
+- sudo make install
+- cd ..
+
 - make
 
 deploy:
