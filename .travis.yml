@@ -23,7 +23,7 @@ before_install:
 - curl -SL http://downloads.sourceforge.net/project/freetype/freetype2/2.8/freetype-2.8.tar.gz | tar -xz
 #- curl -SL https://sourceforge.net/projects/gnuwin32/files/freetype/2.3.5-1/freetype-2.3.5-1-lib.zip/download --output /tmp/freetype-2.3.5-1-lib.zip && sudo unzip /tmp/freetype-2.3.5-1-lib.zip -d /usr/local/
 
-script:
+install:
 # Compile and install zlib under /usr/i686-w64-mingw32/lib
 - cd zlib*
 # zlib 'configure' script is currently broken, use win32/Makefile.gcc directly
@@ -34,12 +34,18 @@ script:
 
 # Compile and install freetype under /usr/i686-w64-mingw32/lib
 - cd freetype*
-- export
 - CC=i686-w64-mingw32-gcc ./configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32 --enable-static CPPFLAGS="-I/usr/i686-w64-mingw32/include" LDFLAGS="-L/usr/i686-w64-mingw32/lib" PKG_CONFIG_LIBDIR=/usr/i686-w64-mingw32/lib/pkgconfig
 - make
 - sudo make install
 - cd ..
 
+# remove libc6-dev, it conflicts with mingw libs
+- apt-get remove libc6-dev
+
+# build
+script:
+- ls -l /usr/i686-w64-mingw32/include
+- ls -l /usr/i686-w64-mingw32/lib
 - make
 
 deploy:
