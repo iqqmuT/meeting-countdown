@@ -10,7 +10,7 @@ before_install:
 # Download and extract SDL_ttf dev lib for MinGW
 - curl -SL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2_ttf-2.0.15/i686-w64-mingw32/* /usr/local/
 # Download and extract Freetype dev lib for MinGW
-- curl -SL https://sourceforge.net/projects/gnuwin32/files/freetype/2.3.5-1/freetype-2.3.5-1-lib.zip/download --output /tmp/freetype-2.3.5-1-lib.zip && unzip /tmp/freetype-2.3.5-1-lib.zip -d /usr/local/
+- curl -SL https://sourceforge.net/projects/gnuwin32/files/freetype/2.3.5-1/freetype-2.3.5-1-lib.zip/download --output /tmp/freetype-2.3.5-1-lib.zip && sudo unzip /tmp/freetype-2.3.5-1-lib.zip -d /usr/local/
 
 script:
 - make
