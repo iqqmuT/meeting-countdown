@@ -25,6 +25,8 @@ LIB := -L/usr/local/lib\
        	-lSDL2main\
        	-lSDL2\
 	-lSDL2_ttf\
+	-lfreetype\
+	-lz\
 	-luser32\
 	-lgdi32\
 	-lwinmm\
@@ -38,7 +40,6 @@ LIB := -L/usr/local/lib\
 	-lcomdlg32\
 	-lsetupapi\
 	-lhid\
-	-lfreetype\
 	-static-libgcc
 
 INC := -I/usr/local/include \
