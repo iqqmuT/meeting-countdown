@@ -6,7 +6,7 @@ compiler:
 before_install:
 - sudo apt-get install pkg-config
 # Remove libc6-dev so it won't conflict with mingw libs
-- sudo apt-get remove libc6-dev
+# - sudo apt-get remove libc6-dev
 
 # Download and extract development libraries under /usr/local
 
@@ -17,10 +17,10 @@ before_install:
 - curl -SL https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-devel-2.0.15-mingw.tar.gz | tar -xzC /tmp && sudo cp -R /tmp/SDL2_ttf-2.0.15/i686-w64-mingw32/* /usr/local/
 
 # zlib
-- curl -SL http://zlib.net/zlib-1.2.11.tar.gz | tar -xzC /usr/local/src
+- curl -SL http://zlib.net/zlib-1.2.11.tar.gz | sudo tar -xzC /usr/local/src
 
 # Freetype
-- curl -SL http://downloads.sourceforge.net/project/freetype/freetype2/2.8/freetype-2.8.tar.gz | tar -xzC /usr/local/src
+- curl -SL http://downloads.sourceforge.net/project/freetype/freetype2/2.8/freetype-2.8.tar.gz | sudo tar -xzC /usr/local/src
 #- curl -SL https://sourceforge.net/projects/gnuwin32/files/freetype/2.3.5-1/freetype-2.3.5-1-lib.zip/download --output /tmp/freetype-2.3.5-1-lib.zip && sudo unzip /tmp/freetype-2.3.5-1-lib.zip -d /usr/local/
 
 script:
