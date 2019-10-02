@@ -52,10 +52,8 @@ install:
 # remove libc6-dev, it conflicts with mingw libs
 - sudo apt-get remove libc6-dev
 
-# build
 script:
-- ls -l /usr/i686-w64-mingw32/include
-- ls -l /usr/i686-w64-mingw32/lib
+# build the app
 - make
 
 deploy:
