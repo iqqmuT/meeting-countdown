@@ -24,3 +24,7 @@ To open a shell inside Docker container:
 ```
 docker run --rm -it -v $PWD:/code iqqmut/meeting-countdown-builder /bin/bash
 ```
+
+# Coding Style
+
+Vaguely using [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).

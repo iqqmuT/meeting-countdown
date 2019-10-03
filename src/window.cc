@@ -13,6 +13,7 @@
 	#include <windows.h>
 #endif
 
+#include "AHEasing/easing.h"
 #include "SDL2_gfx/SDL2_gfxPrimitives.h"
 
 const int SCREEN_WIDTH = 640;
@@ -37,6 +38,9 @@ Window::Window() {
 	mHeight = 0;
 
 	mFrame = 0;
+
+  // start counting after these ticks
+	mStartCountingTicks = 1000;
 }
 
 #ifdef _WIN32
@@ -149,6 +153,10 @@ bool Window::init(Config* config) {
 
 				// flag as opened
 				mShown = true;
+
+				// initialize circle component
+				circle_.Init(config, mRenderer, mEndTicks);
+
 			} else {
 				printf("Could not create renderer. SDL Error: %s\n", SDL_GetError());
 				SDL_DestroyWindow(mWindow);
@@ -316,17 +324,18 @@ void Window::mirror() {
 }
 #endif
 
-int secsLeft;
+int secsLeft = -1;
 
 void Window::render() {
 	++mFrame;
 	// if (!mMinimized) {
 
-		Uint32 ticksNow = SDL_GetTicks();
-		int newSecsLeft = floor((mEndTicks - ticksNow) / 1000);
+	mTicksNow = SDL_GetTicks();
+	int endDuration = mConfig->getProgressEndDuration();
+	if (mTicksNow < mEndTicks + endDuration) {
+		int newSecsLeft = floor((mEndTicks - mTicksNow) / 1000);
 		int min = floor(secsLeft / 60);
 		int sec = secsLeft % 60;
-
 
 		time_t now = time(0);
 		tm *ltm = localtime(&now);
@@ -334,10 +343,15 @@ void Window::render() {
 		// printf("Seconds left: %d\n", secsLeft);
 
 		if (secsLeft != newSecsLeft) {
+			if (min == 0 && sec == 0) {
+				printf("Hetkinen: %d %d %d\n", min, sec, secsLeft);
+			}
 			char foo[500];
 			sprintf(foo, "%d:%02d", min, sec);
-			if (!mFontTexture.loadFromRenderedText(foo, textColor)) {
-				printf("Failed to render text texture.\n");
+			if (secsLeft >= 0) {
+				if (!mFontTexture.loadFromRenderedText(foo, textColor)) {
+					printf("Failed to render text texture.\n");
+				}
 			}
 			secsLeft = newSecsLeft;
 		}
@@ -354,16 +368,16 @@ void Window::render() {
 		mFontTexture.render(70, 70);
 
 		// draw red square
-		SDL_Rect rect1 = {0, 0, 100, 100};
-		SDL_SetRenderDrawColor(mRenderer, 0, 0, 0xFF, 0xFF);
+		// SDL_Rect rect1 = {0, 0, 100, 100};
+		// SDL_SetRenderDrawColor(mRenderer, 0, 0, 0xFF, 0xFF);
 		// SDL_RenderFillRect(mRenderer, &rect1);
 		// SDL_RenderPresent(mRenderer);
 
 
-		pixelRGBA(mRenderer, 100, 100, 0, 0, 0, 0xFF);
+		// pixelRGBA(mRenderer, 100, 100, 0, 0, 0, 0xFF);
 		int x = mFrame;
 
-		float progress = (float) ticksNow / (float) mEndTicks;
+		float progress = (float) mTicksNow / (float) mEndTicks;
 
 		int width = mConfig->getProgressWidth();
 		Config::Color lineColor = mConfig->getProgressColor();
@@ -372,9 +386,9 @@ void Window::render() {
 		// filledPieRGBA(mRenderer, 100, 100, 100, -90, (progress * 360.0) - 90.0, lineColor.r, lineColor.g, lineColor.b, 0xFF);
 		// filledCircleRGBA(mRenderer, 100, 100, 100 - width, bgColor.r, bgColor.g, bgColor.b, 0xFF);
 
-		int size = 80;
-		aaArcRGBA(mRenderer, 100, 100, size, size, -90, 360 - 89.9, width, 0x11, 0x11, 0x11, 0xFF);
-		aaArcRGBA(mRenderer, 100, 100, size, size, -90, (progress * 360.0) - 90.0, width, lineColor.r, lineColor.g, lineColor.b, 0xFF);
+		// int size = 80;
+		// aaArcRGBA(mRenderer, 100, 100, size, size, -90, 360 - 89.9, width, 0x11, 0x11, 0x11, 0xFF);
+		// aaArcRGBA(mRenderer, 100, 100, size, size, -90, (progress * 360.0) - 90.0, width, lineColor.r, lineColor.g, lineColor.b, 0xFF);
 
 		// filledCircleRGBA(mRenderer, x, 200, 99, 0, 0xFF, 0, 0xFF);
 		// aacircleRGBA(mRenderer, x, 200, 100, 0, 0xFF, 0, 0xFF);
@@ -416,10 +430,13 @@ void Window::render() {
 #endif
 */
 
-		// update screen
-		SDL_RenderPresent(mRenderer);
+	}
+	circle_.Render(mTicksNow);
 
-		mirror();
+	// update screen
+	SDL_RenderPresent(mRenderer);
+
+	mirror();
 	// }
 }
 

@@ -7,6 +7,7 @@
 	#include <windows.h>
 #endif
 
+#include "circle.h"
 #include "config.h"
 #include "font_texture.h"
 
@@ -49,13 +50,17 @@ class Window {
 
 		// animation
 		void mirror();
+
 		int mFrame;
 		FontTexture mFontTexture;
 #ifdef _WIN32
 		HDC mHdc;
 #endif
 		Uint32 mStartTicks;
+		Uint32 mStartCountingTicks;
 		Uint32 mEndTicks;
+		Uint32 mTicksNow;
+		Circle circle_;
 };
 
 #endif

@@ -10,7 +10,8 @@ TARGETDIR := bin
 TARGET := $(TARGETDIR)/meeting-countdown.exe
 
 EXT_OBJECTS := $(BUILDDIR)/SDL2_gfx/SDL2_gfxPrimitives.o \
-	$(BUILDDIR)/SDL2_gfx/SDL2_rotozoom.o
+	$(BUILDDIR)/SDL2_gfx/SDL2_rotozoom.o \
+	$(BUILDDIR)/AHEasing/easing.o
 
 SRCEXT := cc
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
@@ -63,6 +64,11 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 # Compile SDL2_gfx external library
 $(BUILDDIR)/SDL2_gfx/%.o: $(EXTERNALDIR)/SDL2_gfx/%.c
 	@mkdir -p $(BUILDDIR)/SDL2_gfx
+	@echo "$(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+# Compile easing
+$(BUILDDIR)/AHEasing/%.o: $(EXTERNALDIR)/AHEasing/%.c
+	@mkdir -p $(BUILDDIR)/AHEasing
 	@echo "$(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:

@@ -96,6 +96,9 @@ bool Config::parse(const char* cfgFile) {
 		success = false;
 	}
 
+	mProgressEndDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-end", 2000);
+	mProgressStartDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-start", 1000);
+
 	// [counter]
 	mCounterShow = mParser->GetBoolean(SECTION_COUNTER, "show", true);
 	if (!parseColorVar(SECTION_COUNTER, "color", "#333333", mCounterColor)) {

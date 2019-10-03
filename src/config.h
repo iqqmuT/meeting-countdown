@@ -28,6 +28,8 @@ public:
 	int getProgressWidth() { return mProgressWidth; }
 	Color getProgressColor() { return mProgressColor; }
 	Color getProgressBgColor() { return mProgressBgColor; }
+	int getProgressEndDuration() { return mProgressEndDuration; }
+	int getProgressStartDuration() { return mProgressStartDuration; }
 
 	bool getCounterShow() { return mCounterShow; }
 	Color getCounterColor() { return mCounterColor; }
@@ -53,6 +55,8 @@ private:
 	int mProgressWidth;
 	Color mProgressColor;
 	Color mProgressBgColor;
+	int mProgressEndDuration;
+	int mProgressStartDuration;
 
 	bool mCounterShow;
 	Color mCounterColor;
