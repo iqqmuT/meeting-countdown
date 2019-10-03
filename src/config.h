@@ -38,6 +38,12 @@ public:
 	int getCounterFadeIn() { return mCounterFadeIn; }
 	int getCounterFadeOut() { return mCounterFadeOut; }
 
+	int getMirrorDisplay() { return mMirrorDisplay; }
+	int getMirrorTop() { return mMirrorTop; }
+	int getMirrorBottom() { return mMirrorBottom; }
+	int getMirrorLeft() { return mMirrorLeft; }
+	int getMirrorRight() { return mMirrorRight; }
+
 private:
 	bool parseColorVar(const char* section, const char* name, const char* def, Color& color);
 	int parseColorString(const char* value, Color& color);

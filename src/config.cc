@@ -112,13 +112,11 @@ bool Config::parse(const char* cfgFile) {
 	// [mirror]
 	mMirrorDisplay = mParser->GetInteger(SECTION_MIRROR, "display", 2);
 	mMirrorAlign = mParser->Get(SECTION_MIRROR, "align", "center");
-	mMirrorBottom = mParser->GetInteger(SECTION_MIRROR, "bottom", 5);
-	mMirrorTop = mParser->GetInteger(SECTION_MIRROR, "top", 5);
+	mMirrorBottom = mParser->GetInteger(SECTION_MIRROR, "bottom", -1);
+	mMirrorTop = mParser->GetInteger(SECTION_MIRROR, "top", -1);
 	mMirrorValign = mParser->Get(SECTION_MIRROR, "valign", "middle");
-	mMirrorLeft = mParser->GetInteger(SECTION_MIRROR, "left", 5);
-	mMirrorRight = mParser->GetInteger(SECTION_MIRROR, "right", 5);
-
-	std::cout << mBgColor.r << ";" << mBgColor.g << ";" << mBgColor.b << "\n";
+	mMirrorLeft = mParser->GetInteger(SECTION_MIRROR, "left", -1);
+	mMirrorRight = mParser->GetInteger(SECTION_MIRROR, "right", -1);
 
 	return success;
 }
