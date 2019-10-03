@@ -14,7 +14,6 @@
 #include "window.h"
 
 Config config;
-SDL_Rect* gDisplayBounds = NULL;
 Window gWindow;
 
 bool init(const char *cfgFile) {
@@ -31,16 +30,6 @@ bool init(const char *cfgFile) {
 		printf("Could not initialize SDL. Error: %s\n", SDL_GetError());
 		success = false;
 	} else {
-		// get number of displays
-		int totalDisplays = SDL_GetNumVideoDisplays();
-		printf("Number of displays: %d\n", totalDisplays);
-
-		// get bounds of each display
-		gDisplayBounds = new SDL_Rect[totalDisplays];
-		for (int i = 0; i < totalDisplays; ++i) {
-			SDL_GetDisplayBounds(i, &gDisplayBounds[i]);
-		}
-
 		if (TTF_Init() < 0) {
 			printf("Could not initialize SDL_ttf. Error: %s\n", TTF_GetError());
 			success = false;
@@ -59,10 +48,6 @@ bool init(const char *cfgFile) {
 void close() {
 	// destroy window
 	gWindow.free();
-
-	// deallocate bounds
-	delete []gDisplayBounds;
-	gDisplayBounds = NULL;
 
 	TTF_Quit();
 	SDL_Quit();
@@ -98,9 +83,6 @@ int main(int argc, char* argv[]) {
 		printUsage(argv);
 		exit(EXIT_FAILURE);
 	}
-	printf("Time: '%s'\n", timeOpt);
-	printf("Config: '%s'\n", cfgFile);
-
 
 	if (init(cfgFile)) {
 		bool quit = false;

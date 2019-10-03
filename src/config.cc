@@ -11,6 +11,26 @@ const char* SECTION_PROGRESS = "progress";
 const char* SECTION_COUNTER = "counter";
 const char* SECTION_MIRROR = "mirror";
 
+const char* DEFAULT_BACKGROUND_COLOR = "#000000";
+const int DEFAULT_WIDTH = 200;
+const int DEFAULT_HEIGHT = 200;
+
+const int DEFAULT_PROGRESS_WIDTH = 10;
+const char* DEFAULT_PROGRESS_COLOR = "#ffffff";
+const char* DEFAULT_PROGRESS_BG_COLOR = "#333333";
+const int DEFAULT_PROGRESS_DURATION_START = 1000;
+const int DEFAULT_PROGRESS_DURATION_END = 2000;
+
+const char* DEFAULT_COUNTER_FONT_FILE = "C:\\Windows\\Fonts\\Arial.ttf";
+const char* DEFAULT_COUNTER_COLOR = "#ffffff";
+const int DEFAULT_COUNTER_FONT_SIZE = 40;
+
+const int DEFAULT_MIRROR_DISPLAY = 2;
+const int DEFAULT_MIRROR_TOP = -1;
+const int DEFAULT_MIRROR_BOTTOM = -1;
+const int DEFAULT_MIRROR_LEFT = -1;
+const int DEFAULT_MIRROR_RIGHT = -1;
+
 int convertHexChar(char c) {
 	static const char* up = "0123456789ABCDEF";
 	const char* p1 = std::lower_bound(up, up + 16, c);
@@ -39,32 +59,27 @@ int convertHex(char c1, char c2) {
 
 Config::Config() {
 	mParser = NULL;
-	/*
-	time_t mEndTime;
-	Color mBgColor;
-	mWidth
-	int mHeight;
-	bool mProgressShow;
-	bool mProgressAnimate;
-	int mProgressWidth;
-	Color mProgressColor;
-	Color mProgressBgColor;
 
-	bool mCounterShow;
-	Color mCounterColor;
-	std::string mCounterFontFile;
-	int mCounterFontSize;
-	int mCounterFadeIn;
-	int mCounterFadeOut;
+	// defaults
+	parseColorString(DEFAULT_BACKGROUND_COLOR, mBgColor);
+	mWidth = DEFAULT_WIDTH;
+	mHeight = DEFAULT_HEIGHT;
 
-	int mMirrorDisplay;
-	std::string mMirrorAlign;
-	int mMirrorBottom;
-	int mMirrorTop;
-	std::string mMirrorValign;
-	int mMirrorLeft;
-	int mMirrorRight;
-	*/
+	mProgressWidth = DEFAULT_PROGRESS_WIDTH;
+	parseColorString(DEFAULT_PROGRESS_COLOR, mProgressColor);
+	parseColorString(DEFAULT_PROGRESS_BG_COLOR, mProgressBgColor);
+	mProgressStartDuration = DEFAULT_PROGRESS_DURATION_START;
+	mProgressEndDuration = DEFAULT_PROGRESS_DURATION_END;
+
+	mCounterFontFile = DEFAULT_COUNTER_FONT_FILE;
+	mCounterFontSize = DEFAULT_COUNTER_FONT_SIZE;
+	parseColorString(DEFAULT_COUNTER_COLOR, mCounterColor);
+
+	mMirrorDisplay = DEFAULT_MIRROR_DISPLAY;
+	mMirrorLeft = DEFAULT_MIRROR_LEFT;
+	mMirrorRight = DEFAULT_MIRROR_RIGHT;
+	mMirrorTop = DEFAULT_MIRROR_TOP;
+	mMirrorBottom = DEFAULT_MIRROR_BOTTOM;
 }
 
 bool Config::parse(const char* cfgFile) {
@@ -76,47 +91,47 @@ bool Config::parse(const char* cfgFile) {
 
 	bool success = true;
 
-	if (!parseColorVar("", "background-color", "#000000", mBgColor)) {
+	if (!parseColorVar("", "background-color", DEFAULT_BACKGROUND_COLOR, mBgColor)) {
 		success = false;
 	}
 
-	mWidth = mParser->GetInteger("", "width", 300);
-	mHeight = mParser->GetInteger("", "height", 300);
+	mWidth = mParser->GetInteger("", "width", DEFAULT_WIDTH);
+	mHeight = mParser->GetInteger("", "height", DEFAULT_HEIGHT);
 
 	// [progress]
 	mProgressShow = mParser->GetBoolean(SECTION_PROGRESS, "show", true);
 	mProgressAnimate = mParser->GetBoolean(SECTION_PROGRESS, "animate", true);
-	mProgressWidth = mParser->GetInteger(SECTION_PROGRESS, "width", 5);
+	mProgressWidth = mParser->GetInteger(SECTION_PROGRESS, "width", DEFAULT_PROGRESS_WIDTH);
 
-	if (!parseColorVar(SECTION_PROGRESS, "color", "#ffffff", mProgressColor)) {
+	if (!parseColorVar(SECTION_PROGRESS, "color", DEFAULT_PROGRESS_COLOR, mProgressColor)) {
 		success = false;
 	}
 
-	if (!parseColorVar(SECTION_PROGRESS, "background-color", "#333333", mProgressBgColor)) {
+	if (!parseColorVar(SECTION_PROGRESS, "background-color", DEFAULT_PROGRESS_BG_COLOR, mProgressBgColor)) {
 		success = false;
 	}
 
-	mProgressEndDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-end", 2000);
-	mProgressStartDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-start", 1000);
+	mProgressEndDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-end", DEFAULT_PROGRESS_DURATION_END);
+	mProgressStartDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-start", DEFAULT_PROGRESS_DURATION_START);
 
 	// [counter]
 	mCounterShow = mParser->GetBoolean(SECTION_COUNTER, "show", true);
-	if (!parseColorVar(SECTION_COUNTER, "color", "#333333", mCounterColor)) {
+	if (!parseColorVar(SECTION_COUNTER, "color", DEFAULT_COUNTER_COLOR, mCounterColor)) {
 		success = false;
 	}
-	mCounterFontFile = mParser->Get(SECTION_COUNTER, "font-file", "");
-	mCounterFontSize = mParser->GetInteger(SECTION_COUNTER, "font-size", 50);
+	mCounterFontFile = mParser->Get(SECTION_COUNTER, "font-file", DEFAULT_COUNTER_FONT_FILE);
+	mCounterFontSize = mParser->GetInteger(SECTION_COUNTER, "font-size", DEFAULT_COUNTER_FONT_SIZE);
 	mCounterFadeIn = mParser->GetInteger(SECTION_COUNTER, "fade-in", 300);
 	mCounterFadeOut = mParser->GetInteger(SECTION_COUNTER, "fade-out", 300);
 
 	// [mirror]
-	mMirrorDisplay = mParser->GetInteger(SECTION_MIRROR, "display", 2);
+	mMirrorDisplay = mParser->GetInteger(SECTION_MIRROR, "display", DEFAULT_MIRROR_DISPLAY);
 	mMirrorAlign = mParser->Get(SECTION_MIRROR, "align", "center");
-	mMirrorBottom = mParser->GetInteger(SECTION_MIRROR, "bottom", -1);
-	mMirrorTop = mParser->GetInteger(SECTION_MIRROR, "top", -1);
+	mMirrorBottom = mParser->GetInteger(SECTION_MIRROR, "bottom", DEFAULT_MIRROR_BOTTOM);
+	mMirrorTop = mParser->GetInteger(SECTION_MIRROR, "top", DEFAULT_MIRROR_TOP);
 	mMirrorValign = mParser->Get(SECTION_MIRROR, "valign", "middle");
-	mMirrorLeft = mParser->GetInteger(SECTION_MIRROR, "left", -1);
-	mMirrorRight = mParser->GetInteger(SECTION_MIRROR, "right", -1);
+	mMirrorLeft = mParser->GetInteger(SECTION_MIRROR, "left", DEFAULT_MIRROR_LEFT);
+	mMirrorRight = mParser->GetInteger(SECTION_MIRROR, "right", DEFAULT_MIRROR_RIGHT);
 
 	return success;
 }

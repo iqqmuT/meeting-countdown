@@ -13,12 +13,6 @@
 #include "AHEasing/easing.h"
 #include "SDL2_gfx/SDL2_gfxPrimitives.h"
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-// const int TRANSPARENCY_COLOR[3] = {0xFF, 0, 0xFF};
-const int TRANSPARENCY_COLOR[3] = {0, 0, 0};
-
-
 Window::Window() {
 	mWindow = NULL;
 	mRenderer = NULL;
@@ -44,6 +38,8 @@ bool Window::init(Config* config) {
 	mConfig = config;
 
 	bg_color_ = config->getBackgroundColor();
+	int width = config->getWidth();
+	int height = config->getHeight();
 
 	// init ticks
 	mStartTicks = SDL_GetTicks();
@@ -51,22 +47,19 @@ bool Window::init(Config* config) {
 	mEndTicks = mStartTicks + (diff * 1000);
 
 	mWindow = SDL_CreateWindow("Countdown", SDL_WINDOWPOS_UNDEFINED,
-	                           SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-														 SCREEN_HEIGHT,
-														 SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	                           SDL_WINDOWPOS_UNDEFINED, width, height,
+														 SDL_WINDOW_SHOWN);
 
 	if (mWindow != NULL) {
 		if (SDL_GetWindowWMInfo(mWindow, &mInfo)) {
 			mMouseFocus = true;
 			mKeyboardFocus = true;
-			mWidth = SCREEN_WIDTH;
-			mHeight = SCREEN_HEIGHT;
 
 			// create renderer for window
 			mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			if (mRenderer != NULL) {
 				// initialize renderer color
-				SDL_SetRenderDrawColor(mRenderer, TRANSPARENCY_COLOR[0], TRANSPARENCY_COLOR[1], TRANSPARENCY_COLOR[2], 0xFF);
+				SDL_SetRenderDrawColor(mRenderer, bg_color_.r, bg_color_.g, bg_color_.b, 0xFF);
 				SDL_RenderClear(mRenderer);
 
 				// grab window identifiers
@@ -211,7 +204,7 @@ void Window::handleEvent(SDL_Event& e) {
 	}
 
 	if (updateCaption) {
-		SDL_SetWindowTitle(mWindow, "Morjesta.");
+		// SDL_SetWindowTitle(mWindow, "Morjesta.");
 	}
 }
 

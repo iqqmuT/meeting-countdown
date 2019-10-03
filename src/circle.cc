@@ -30,6 +30,7 @@ void Circle::RenderPre() {
 
 void Circle::RenderProgress() {
 	float progress = (float) ticks_now_ / (float) ticks_finish_;
+
   // draw full circle in background
 	aaArcRGBA(renderer_, x_, y_, radius_, radius_,
             -90, 270, line_width_,
