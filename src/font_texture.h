@@ -8,6 +8,7 @@ class FontTexture {
 		void set_renderer(SDL_Renderer *renderer);
 		bool LoadFont(const char *font_path, int size);
 		bool LoadFromRenderedText(const char *text, SDL_Color color);
+		void SetAlpha(Uint8 alpha);
 		void Free();
 		void CloseFont();
 		void Render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0,
@@ -20,6 +21,7 @@ class FontTexture {
 		SDL_Renderer* renderer_;
 		SDL_Texture* texture_;
 		TTF_Font* font_;
+		Uint8 alpha_;
 		int width_;
 		int height_;
 };

@@ -27,6 +27,8 @@ const int DEFAULT_CIRCLE_DURATION_END = 2000;
 const char* DEFAULT_COUNTER_FONT_FILE = "C:\\Windows\\Fonts\\segoeui.ttf";
 const char* DEFAULT_COUNTER_COLOR = "#ffffff";
 const int DEFAULT_COUNTER_FONT_SIZE = 40;
+const int DEFAULT_COUNTER_FADE_IN = 250;
+const int DEFAULT_COUNTER_FADE_OUT = 250;
 
 const int DEFAULT_MIRROR_DISPLAY = 2;
 const int DEFAULT_MIRROR_TOP = -1;
@@ -77,6 +79,8 @@ Config::Config() {
 	counter_font_path_ = DEFAULT_COUNTER_FONT_FILE;
 	counter_font_size_ = DEFAULT_COUNTER_FONT_SIZE;
 	ParseColorString(DEFAULT_COUNTER_COLOR, counter_color_);
+	counter_fade_in_ = DEFAULT_COUNTER_FADE_IN;
+	counter_fade_out_ = DEFAULT_COUNTER_FADE_OUT;
 
 	mirror_display_ = DEFAULT_MIRROR_DISPLAY;
 	mirror_left_ = DEFAULT_MIRROR_LEFT;
@@ -124,8 +128,8 @@ bool Config::Parse(const char* cfgFile) {
 	}
 	counter_font_path_ = parser_->Get(SECTION_COUNTER, "font-file", DEFAULT_COUNTER_FONT_FILE);
 	counter_font_size_ = parser_->GetInteger(SECTION_COUNTER, "font-size", DEFAULT_COUNTER_FONT_SIZE);
-	counter_fade_in_ = parser_->GetInteger(SECTION_COUNTER, "fade-in", 300);
-	counter_fade_out_ = parser_->GetInteger(SECTION_COUNTER, "fade-out", 300);
+	counter_fade_in_ = parser_->GetInteger(SECTION_COUNTER, "fade-in", DEFAULT_COUNTER_FADE_IN);
+	counter_fade_out_ = parser_->GetInteger(SECTION_COUNTER, "fade-out", DEFAULT_COUNTER_FADE_OUT);
 
 	// [mirror]
 	mirror_display_ = parser_->GetInteger(SECTION_MIRROR, "display", DEFAULT_MIRROR_DISPLAY);

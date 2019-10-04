@@ -5,12 +5,15 @@
 
 #include <iostream>
 
+#include "AHEasing/easing.h"
+
 bool Counter::Init(Config* config, SDL_Renderer* renderer, Uint32 ticks_finish) {
   config_ = config;
   renderer_ = renderer;
   ticks_finish_ = ticks_finish;
   ticks_now_ = 0;
   seconds_left_ = -1;
+  is_zero_ = false;
 
   // get values from config
   color_ = config_->circle_color();
@@ -29,9 +32,35 @@ bool Counter::Init(Config* config, SDL_Renderer* renderer, Uint32 ticks_finish) 
 void Counter::RenderPre() {
 }
 
+void Counter::RenderProgress() {
+  font_texture_.Render(x_, y_);
+}
+
+void Counter::RenderPost() {
+  int duration = config_->counter_fade_out();
+	float progress = (float) (ticks_now_ - ticks_finish_) / duration;
+	// use easing in animation
+	progress = CubicEaseIn(progress);
+  font_texture_.SetAlpha((1 - progress) * 0xFF);
+  font_texture_.Render(x_, y_);
+}
+
+void Counter::Render(Uint32 ticks_now) {
+  ticks_now_ = ticks_now;
+  int start_duration = config_->circle_start_duration();
+  int end_duration = config_->counter_fade_out();
+	if (ticks_now_ < start_duration) {
+		RenderPre();
+  } else if (ticks_now_ < ticks_finish_) {
+    RenderProgress();
+  } else if (ticks_now_ < ticks_finish_ + end_duration) {
+		RenderPost();
+  }
+}
+
 int Counter::Update() {
   int seconds_left = floor((ticks_finish_ - ticks_now_) / 1000);
-  if (seconds_left != seconds_left_) {
+  if (ticks_now_ <= ticks_finish_ && seconds_left != seconds_left_) {
     // update texture only when remaining seconds change
     char txt[64];
     int min = floor(seconds_left / 60);
@@ -62,24 +91,4 @@ int Counter::Update() {
     return 1;
   }
   return 0;
-}
-
-void Counter::RenderProgress() {
-  font_texture_.Render(x_, y_);
-}
-
-void Counter::RenderPost() {
-}
-
-void Counter::Render(Uint32 ticks_now) {
-  ticks_now_ = ticks_now;
-  int start_duration = config_->circle_start_duration();
- 	int end_duration = config_->circle_end_duration();
-	if (ticks_now_ < start_duration) {
-		RenderPre();
-  } else if (ticks_now_ < ticks_finish_) {
-    RenderProgress();
-  } else if (ticks_now_ < ticks_finish_ + end_duration) {
-		RenderPost();
-  }
 }

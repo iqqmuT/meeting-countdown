@@ -74,14 +74,14 @@ bool Mirror::Init(Config* config, SDL_SysWMinfo* info) {
 #ifdef _WIN32
 // Copies pixels from window's device context and draws it directly in the screen.
 void Mirror::Draw() {
-	HWND hWindow = info_->info.win.window;
-	HDC srcDC = GetDC(hWindow);
+  HWND hWindow = info_->info.win.window;
+  HDC srcDC = GetDC(hWindow);
 
   // use BitBlt to copy pixels from rectangle area
-	BitBlt(screen_dc_, x_, y_, width_, height_, srcDC, 0, 0, SRCCOPY);
+  BitBlt(screen_dc_, x_, y_, width_, height_, srcDC, 0, 0, SRCCOPY);
 
   // release device context
-	ReleaseDC(hWindow, srcDC);
+  ReleaseDC(hWindow, srcDC);
 }
 #else
 void Mirror::Draw() {

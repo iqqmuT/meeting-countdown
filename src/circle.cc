@@ -46,7 +46,7 @@ void Circle::RenderPost() {
 	int duration = config_->circle_end_duration();
 	float progress = (float) (ticks_now_ - ticks_finish_) / duration;
 	// use easing in animation
-	progress = CubicEaseIn(progress);
+	progress = CubicEaseInOut(progress);
 	aaArcRGBA(renderer_, x_, y_, radius_, radius_,
             (progress * 360.0) - 90.0, 270, line_width_,
             color_.r, color_.g, color_.b, 0xFF);

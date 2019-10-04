@@ -15,6 +15,7 @@ FontTexture::FontTexture() {
 	texture_ = NULL;
 	width_ = 0;
 	height_ = 0;
+	alpha_ = 0xFF;
 }
 
 FontTexture::~FontTexture() {
@@ -49,6 +50,8 @@ bool FontTexture::LoadFromRenderedText(const char *text, SDL_Color color) {
 		if (texture_) {
 			width_ = surface->w;
 			height_ = surface->h;
+			// support transparency
+			SDL_SetTextureBlendMode(texture_, SDL_BLENDMODE_BLEND);
 		} else {
 			std::cerr << "Unable to create texture from rendered text. SDL Error: " << SDL_GetError() << "\n";
 		}
@@ -60,6 +63,11 @@ bool FontTexture::LoadFromRenderedText(const char *text, SDL_Color color) {
 	}
 
 	return texture_ != NULL;
+}
+
+void FontTexture::SetAlpha(Uint8 alpha) {
+	alpha_ = alpha;
+	SDL_SetTextureAlphaMod(texture_, alpha_);
 }
 
 void FontTexture::Free() {
