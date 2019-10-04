@@ -62,7 +62,7 @@ $(TARGET): $(OBJECTS)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
-	@echo "$(CC) $(CFLAGS) $(INC) $(DFLAGS) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@echo "$(CC) $(CFLAGS) $(INC) $(DFLAGS) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) $(DFLAGS) -c -o $@ $<
 
 # Compile SDL2_gfx external library
 $(BUILDDIR)/SDL2_gfx/%.o: $(EXTERNALDIR)/SDL2_gfx/%.c
