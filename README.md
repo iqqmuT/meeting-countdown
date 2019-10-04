@@ -4,7 +4,7 @@
 
 ## Download
 
-Download latest [meeting-countdown.exe](https://github.com/iqqmuT/meeting-countdown/releases/latest/download/meeting-countdown.exe).
+Download the latest [meeting-countdown.exe](https://github.com/iqqmuT/meeting-countdown/releases/latest/download/meeting-countdown.exe).
 
 ## Usage
 
@@ -12,6 +12,9 @@ You can double click the exe to run it with defaults or to see command line usag
 ```
 meeting-countdown.exe -h
 ```
+
+Windows Defender SmartScreen might prevent the app from starting,
+but you can start it by clicking **More info** and **Run anyway**.
 
 ### Examples
 
