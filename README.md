@@ -4,7 +4,7 @@
 
 ## Download
 
-Download the latest [meeting-countdown.exe](https://github.com/iqqmuT/meeting-countdown/releases/latest/download/meeting-countdown.exe).
+Download the latest [meeting-countdown.exe](https://github.com/iqqmuT/meeting-countdown/releases/latest/download/meeting-countdown.exe) or see [older versions](https://github.com/iqqmuT/meeting-countdown/releases).
 
 ## Usage
 
