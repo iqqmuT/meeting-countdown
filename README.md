@@ -1,3 +1,5 @@
+[![meeting-countdown-1.png](https://i.postimg.cc/P51t9pWh/meeting-countdown-1.png)](https://postimg.cc/rDFXtpZY)
+
 # Countdown clock for meetings
 
 [![Build Status](https://travis-ci.org/iqqmuT/meeting-countdown.svg?branch=master)](https://travis-ci.org/iqqmuT/meeting-countdown)
