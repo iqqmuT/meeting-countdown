@@ -20,7 +20,10 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o)) \
 
 CFLAGS := -w -Wall
 
+# Read version from the latest git tag
 GIT_VERSION := "$(shell git describe --tags --always)"
+
+# Provide version with -D flag
 DFLAGS := -DVERSION=\"$(GIT_VERSION)\"
 
 # Note: ordering is important!
