@@ -11,6 +11,8 @@ const char* SECTION_PROGRESS = "progress";
 const char* SECTION_COUNTER = "counter";
 const char* SECTION_MIRROR = "mirror";
 
+const int DEFAULT_TIME_SECS = 3 * 60; // default 3 min countdown
+
 const char* DEFAULT_BACKGROUND_COLOR = "#000000";
 const int DEFAULT_WIDTH = 200;
 const int DEFAULT_HEIGHT = 200;
@@ -21,7 +23,8 @@ const char* DEFAULT_PROGRESS_BG_COLOR = "#333333";
 const int DEFAULT_PROGRESS_DURATION_START = 1000;
 const int DEFAULT_PROGRESS_DURATION_END = 2000;
 
-const char* DEFAULT_COUNTER_FONT_FILE = "C:\\Windows\\Fonts\\Arial.ttf";
+// Default font in Windows: Segoe UI
+const char* DEFAULT_COUNTER_FONT_FILE = "C:\\Windows\\Fonts\\segoeui.ttf";
 const char* DEFAULT_COUNTER_COLOR = "#ffffff";
 const int DEFAULT_COUNTER_FONT_SIZE = 40;
 
@@ -229,4 +232,18 @@ void Config::setEndTimeStr(const char* endTime) {
 	} else {
 		std::cout << "Error: could not parse " << endTime << "\n";
 	}
+}
+
+void Config::setEndTimeSecs(int secs) {
+	time_t t_now = time(NULL);
+	struct tm* tm_end = localtime(&t_now);
+	if (secs == 0) {
+		secs = DEFAULT_TIME_SECS;
+	}
+	tm_end->tm_sec += secs;
+	setEndTime(mktime(tm_end));
+}
+
+void Config::setCounterFontFile(const char* font_path) {
+	mCounterFontFile = font_path;
 }

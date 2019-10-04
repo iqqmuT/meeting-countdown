@@ -2,6 +2,25 @@
 
 [![Build Status](https://travis-ci.org/iqqmuT/meeting-countdown.svg?branch=master)](https://travis-ci.org/iqqmuT/meeting-countdown)
 
+## Usage
+
+### Examples
+
+Countdown to 14:45 (2:45 PM):
+```
+meeting-countdown.exe -t 14:45
+```
+
+Countdown to 18:30 (6:30 PM), using configuration file `countdown.ini`:
+```
+meeting-countdown.exe -t 18:30 -c countdown.ini
+```
+
+5 minute countdown, using Comic Sans font:
+```
+meeting-countdown.exe -m 5 -f C:\Windows\Fonts\comic.ttf
+```
+
 ## Building
 
 * Install Docker

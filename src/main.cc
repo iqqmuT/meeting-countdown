@@ -54,18 +54,29 @@ void close() {
 }
 
 void printUsage(char* argv[]) {
-	fprintf(stderr, "Usage: %s [-t time]\n", argv[0]);
+	fprintf(stderr, "Usage: %s [-c configfile] [-f fontfile] [-m minutes] [-t HH:MM]\n", argv[0]);
 }
 
 int main(int argc, char* argv[]) {
 	int opt;
-	const char *cfgFile = NULL;
-	const char *timeOpt = NULL;
+	int mins = -1;
+	const char* cfgFile = NULL;
+	const char* fontFile = NULL;
+	const char* timeOpt = NULL;
 	// "t:" means that -t option requires an argument
-	while ((opt = getopt(argc, argv, "t:c:")) != -1) {
+	while ((opt = getopt(argc, argv, "t:c:m:f:")) != -1) {
 		switch (opt) {
 			case 'c':
 				cfgFile = optarg;
+				break;
+
+			case 'f':
+				config.setCounterFontFile(optarg);
+				break;
+
+			case 'm':
+				mins = atoi(optarg);
+				config.setEndTimeSecs(mins * 60);
 				break;
 
 			case 't':
@@ -79,9 +90,9 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	if (timeOpt == NULL) {
-		printUsage(argv);
-		exit(EXIT_FAILURE);
+	if (timeOpt == NULL && mins == -1) {
+		// no time given
+		config.setEndTimeSecs();
 	}
 
 	if (init(cfgFile)) {

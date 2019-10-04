@@ -20,6 +20,8 @@ public:
 	time_t getEndTime() { return mEndTime; }
 	void setEndTime(time_t endTime);
 	void setEndTimeStr(const char* endTime);
+	void setEndTimeSecs(int secs = 0);
+
 	Color getBackgroundColor() { return mBgColor; }
 	int getWidth() { return mWidth; }
 	int getHeight() { return mHeight; }
@@ -34,6 +36,7 @@ public:
 	bool getCounterShow() { return mCounterShow; }
 	Color getCounterColor() { return mCounterColor; }
 	const char* getCounterFontFile() { return mCounterFontFile.c_str(); }
+	void setCounterFontFile(const char* font_path);
 	int getCounterFontSize() { return mCounterFontSize; }
 	int getCounterFadeIn() { return mCounterFadeIn; }
 	int getCounterFadeOut() { return mCounterFadeOut; }
