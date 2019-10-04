@@ -77,6 +77,10 @@ left = 50
 bottom = 50
 ```
 
+### Task Scheduler
+
+If you want the countdown start automatically at a specific time, use Windows Task Scheduler.
+
 ## Building
 
 * Install Docker
