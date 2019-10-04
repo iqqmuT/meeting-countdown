@@ -20,6 +20,9 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o)) \
 
 CFLAGS := -w -Wall
 
+GIT_VERSION := "$(shell git describe --tags --always)"
+DFLAGS := -DVERSION=\"$(GIT_VERSION)\"
+
 # Note: ordering is important!
 LIB := -L/usr/local/lib\
 	-L/usr/local/bin\
@@ -59,7 +62,7 @@ $(TARGET): $(OBJECTS)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
-	@echo "$(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@echo "$(CC) $(CFLAGS) $(INC) $(DFLAGS) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 # Compile SDL2_gfx external library
 $(BUILDDIR)/SDL2_gfx/%.o: $(EXTERNALDIR)/SDL2_gfx/%.c

@@ -12,6 +12,10 @@
 #include "config.h"
 #include "window.h"
 
+#ifdef VERSION
+const volatile static char version[] = VERSION;
+#endif
+
 Config config;
 Window main_window;
 
@@ -93,6 +97,10 @@ int main(int argc, char* argv[]) {
 		// no time given
 		config.set_end_time_secs();
 	}
+
+#ifdef VERSION
+	std::cout << "Meeting Countdown " << version << "\n";
+#endif
 
 	if (init(cfg_file)) {
 		bool quit = false;
