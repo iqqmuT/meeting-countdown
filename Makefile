@@ -2,6 +2,7 @@
 
 # Main compiler
 CC := i686-w64-mingw32-g++
+WINDRES := i686-w64-mingw32-windres
 
 SRCDIR := src
 BUILDDIR := build
@@ -15,8 +16,13 @@ EXT_OBJECTS := $(BUILDDIR)/SDL2_gfx/SDL2_gfxPrimitives.o \
 
 SRCEXT := cc
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+
+# .res file is for windows exe meta information, like icon
+RESSRC := windres/winapp.rc
+RESOBJECT := windres/winapp.res
+
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o)) \
-	$(EXT_OBJECTS)
+	$(EXT_OBJECTS) $(RESOBJECT)
 
 CFLAGS := -w -Wall
 
@@ -76,6 +82,10 @@ $(BUILDDIR)/SDL2_gfx/%.o: $(EXTERNALDIR)/SDL2_gfx/%.c
 $(BUILDDIR)/AHEasing/%.o: $(EXTERNALDIR)/AHEasing/%.c
 	@mkdir -p $(BUILDDIR)/AHEasing
 	@echo "$(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+# Use windres to compile Windows resource file with icon
+$(RESOBJECT): $(RESSRC)
+	@echo "$(WINDRES) $< -O coff -o $@"; $(WINDRES) $< -O coff -o $@
 
 clean:
 	@echo "===== Cleaning..."
