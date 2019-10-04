@@ -4,6 +4,11 @@
 
 ## Usage
 
+To see usage, run:
+```
+meeting-countdown.exe -h
+```
+
 ### Examples
 
 Countdown to 14:45 (2:45 PM):
@@ -19,6 +24,48 @@ meeting-countdown.exe -t 18:30 -c countdown.ini
 5 minute countdown, using Comic Sans font:
 ```
 meeting-countdown.exe -m 5 -f C:\Windows\Fonts\comic.ttf
+```
+
+### Sample INI file
+
+```INI
+; Example INI file
+
+; background color in html format
+background-color = #000000
+width = 200
+height = 200
+
+; settings for progress circle
+[circle]
+; width of circle line
+width = 10
+; color of circle line
+color = #dddddd
+; background color for circle line
+background-color = #333333
+; start animation duration in milliseconds
+duration-start = 1000
+; end animation duration in milliseconds
+duration-end = 2000
+
+; settings for digit display
+[counter]
+; color for digits
+color = #dddddd
+; font to be used
+font-file = C:\Windows\Fonts\segoeui.ttf
+; font size
+font-size = 40
+
+; settings for mirroring timer to another display
+[mirror]
+; display number
+display = 2
+; margin from left of display
+left = 50
+; margin from bottom of display
+bottom = 50
 ```
 
 ## Building

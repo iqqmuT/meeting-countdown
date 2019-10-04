@@ -17,9 +17,9 @@ bool Mirror::Init(Config* config, SDL_SysWMinfo* info) {
   info_ = info;
 
   // get values from config
-  width_ = config_->getWidth();
-  height_ = config_->getHeight();
-  display_ = config_->getMirrorDisplay();
+  width_ = config_->width();
+  height_ = config_->height();
+  display_ = config_->mirror_display();
 
   // get number of displays
   int total_displays = SDL_GetNumVideoDisplays();
@@ -27,14 +27,14 @@ bool Mirror::Init(Config* config, SDL_SysWMinfo* info) {
   x_ = 0;
   y_ = 0;
 
-  int left = config_->getMirrorLeft();
-  int right = config_->getMirrorRight();
+  int left = config_->mirror_left();
+  int right = config_->mirror_right();
   if (left == -1 && right == -1) {
     // default
     left = 50;
   }
-  int top = config_->getMirrorTop();
-  int bottom = config_->getMirrorBottom();
+  int top = config_->mirror_top();
+  int bottom = config_->mirror_bottom();
   if (top == -1 && bottom == -1) {
     // default
     bottom = 50;

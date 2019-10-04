@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#include <iostream>
 #include <string>
 
 #include <SDL2/SDL.h>
@@ -9,74 +10,76 @@
 #include <SDL2/SDL_ttf.h>
 
 FontTexture::FontTexture() {
-	mFont = NULL;
-	mRenderer = NULL;
-	mTexture = NULL;
-	mWidth = 0;
-	mHeight = 0;
+	font_ = NULL;
+	renderer_ = NULL;
+	texture_ = NULL;
+	width_ = 0;
+	height_ = 0;
 }
 
 FontTexture::~FontTexture() {
-	free();
-	closeFont();
+	Free();
+	CloseFont();
 }
 
-void FontTexture::setRenderer(SDL_Renderer* renderer) {
-	mRenderer = renderer;
+void FontTexture::set_renderer(SDL_Renderer* renderer) {
+	renderer_ = renderer;
 }
 
-bool FontTexture::loadFont(const char *fontPath, int size) {
-	closeFont();
-	mFont = TTF_OpenFont(fontPath, size);
-	if (mFont == NULL) {
-		printf("Unable to open font. SDL_ttf error: %s\n", TTF_GetError());
+bool FontTexture::LoadFont(const char *fontPath, int size) {
+	CloseFont();
+	font_ = TTF_OpenFont(fontPath, size);
+	if (font_ == NULL) {
+		std::cerr << "Unable to open font file. SDL_ttf error: " << TTF_GetError() << "\n";
+		return false;
 	}
+	return true;
 }
 
-bool FontTexture::loadFromRenderedText(const char *text, SDL_Color color) {
+bool FontTexture::LoadFromRenderedText(const char *text, SDL_Color color) {
 	// get rid of pre-existing texture
-	free();
+	Free();
 
 	// render text surface
 	// SDL_Surface* surface = TTF_RenderText_Solid(mFont, text, color);
-	SDL_Surface* surface = TTF_RenderText_Blended(mFont, text, color);
+	SDL_Surface* surface = TTF_RenderText_Blended(font_, text, color);
 	if (surface) {
 		// create texture from surface pixels
-		mTexture = SDL_CreateTextureFromSurface(mRenderer, surface);
-		if (mTexture) {
-			mWidth = surface->w;
-			mHeight = surface->h;
+		texture_ = SDL_CreateTextureFromSurface(renderer_, surface);
+		if (texture_) {
+			width_ = surface->w;
+			height_ = surface->h;
 		} else {
-			printf("Unable to create texture from rendered text. SDL Error: %s\n", SDL_GetError());
+			std::cerr << "Unable to create texture from rendered text. SDL Error: " << SDL_GetError() << "\n";
 		}
 
 		// get rid of used surface
 		SDL_FreeSurface(surface);
 	} else {
-		printf("Unable to render text surface. SDL_ttf error: %s\n", TTF_GetError());
+		std::cerr << "Unable to render text surface. SDL_ttf error: " << TTF_GetError() << "\n";
 	}
 
-	return mTexture != NULL;
+	return texture_ != NULL;
 }
 
-void FontTexture::free() {
-	if (mTexture != NULL) {
-		SDL_DestroyTexture(mTexture);
-		mTexture = NULL;
-		mWidth = 0;
-		mHeight = 0;
-	}
-}
-
-void FontTexture::closeFont() {
-	if (mFont != NULL) {
-		TTF_CloseFont(mFont);
+void FontTexture::Free() {
+	if (texture_ != NULL) {
+		SDL_DestroyTexture(texture_);
+		texture_ = NULL;
+		width_ = 0;
+		height_ = 0;
 	}
 }
 
-void FontTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+void FontTexture::CloseFont() {
+	if (font_ != NULL) {
+		TTF_CloseFont(font_);
+	}
+}
+
+void FontTexture::Render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	// set rendering space and render to screen
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	SDL_Rect renderQuad = { x, y, width_, height_ };
 
 	// set clip rendering dimensions
 	if (clip != NULL) {
@@ -85,13 +88,5 @@ void FontTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* 
 	}
 
 	// render
-	SDL_RenderCopyEx(mRenderer, mTexture, clip, &renderQuad, angle, center, flip);
-}
-
-int FontTexture::getWidth() {
-	return mWidth;
-}
-
-int FontTexture::getHeight() {
-	return mHeight;
+	SDL_RenderCopyEx(renderer_, texture_, clip, &renderQuad, angle, center, flip);
 }

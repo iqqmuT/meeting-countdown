@@ -12,43 +12,25 @@
 class Window {
 public:
 	Window();
-	bool init(Config *config);
-	bool enableTransparency();
-	void handleEvent(SDL_Event& e);
-	void focus();
-	void render();
-	void free();
-	int getWidth();
-	int getHeight();
-	bool hasMouseFocus();
-	bool hasKeyboardFocus();
-	bool isMinimized();
-	bool isShown();
+	bool Init(Config *config);
+	void HandleEvent(SDL_Event& e);
+	void Focus();
+	int Render();
+	void Free();
 
 private:
-	Config* mConfig;
+	Config* config_;
 
-	// window data
-	SDL_Window* mWindow;
-	SDL_Renderer* mRenderer;
-	SDL_SysWMinfo mInfo;
-	int mWindowID;
-	int mWindowDisplayID;
+	SDL_Window* sdl_window_;
+	SDL_Renderer* renderer_;
+	SDL_SysWMinfo info_;
+	int window_id_;
 
-	// window dimensions
-	int mWidth;
-	int mHeight;
+	bool minimized_;
+	bool shown_;
 
-	// window focus
-	bool mMouseFocus;
-	bool mKeyboardFocus;
-	bool mFullScreen;
-	bool mMinimized;
-	bool mShown;
-
-	Uint32 mStartTicks;
-	Uint32 mStartCountingTicks;
-	Uint32 mEndTicks;
+	Uint32 start_ticks_;
+	Uint32 end_ticks_;
 	Config::Color bg_color_;
 	Circle circle_;
 	Counter counter_;

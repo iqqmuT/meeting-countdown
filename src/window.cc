@@ -1,6 +1,5 @@
 #include "window.h"
 
-#include <stdio.h>
 #include <math.h>
 
 #include <ctime>
@@ -14,262 +13,146 @@
 #include "SDL2_gfx/SDL2_gfxPrimitives.h"
 
 Window::Window() {
-	mWindow = NULL;
-	mRenderer = NULL;
-	SDL_VERSION(&mInfo.version);
+	sdl_window_ = NULL;
+	renderer_ = NULL;
+	SDL_VERSION(&info_.version);
 
-	mMouseFocus = false;
-	mKeyboardFocus = false;
-	mFullScreen = false;
-	mShown = false;
-	mWindowID = -1;
-	mWindowDisplayID = -1;
-
-	mWidth = 0;
-	mHeight = 0;
-
-  // start counting after these ticks
-	mStartCountingTicks = 1000;
+	shown_ = false;
+	window_id_ = -1;
 }
 
 SDL_Color textColor = { 0xFF, 0xFF, 0xFF };
 
-bool Window::init(Config* config) {
-	mConfig = config;
+bool Window::Init(Config* config) {
+	config_ = config;
 
-	bg_color_ = config->getBackgroundColor();
-	int width = config->getWidth();
-	int height = config->getHeight();
+	bg_color_ = config->bg_color();
+	int width = config->width();
+	int height = config->height();
 
 	// init ticks
-	mStartTicks = SDL_GetTicks();
-	time_t diff = config->getEndTime() - time(NULL);
-	mEndTicks = mStartTicks + (diff * 1000);
+	start_ticks_ = SDL_GetTicks();
+	time_t diff = config->end_time() - time(NULL);
+	end_ticks_ = start_ticks_ + (diff * 1000);
 
-	mWindow = SDL_CreateWindow("Countdown", SDL_WINDOWPOS_UNDEFINED,
+	sdl_window_ = SDL_CreateWindow("Countdown", SDL_WINDOWPOS_UNDEFINED,
 	                           SDL_WINDOWPOS_UNDEFINED, width, height,
 														 SDL_WINDOW_SHOWN);
 
-	if (mWindow != NULL) {
-		if (SDL_GetWindowWMInfo(mWindow, &mInfo)) {
-			mMouseFocus = true;
-			mKeyboardFocus = true;
-
+	if (sdl_window_ != NULL) {
+		if (SDL_GetWindowWMInfo(sdl_window_, &info_)) {
 			// create renderer for window
-			mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-			if (mRenderer != NULL) {
+			renderer_ = SDL_CreateRenderer(sdl_window_, -1,
+			                               SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+			if (renderer_ != NULL) {
 				// initialize renderer color
-				SDL_SetRenderDrawColor(mRenderer, bg_color_.r, bg_color_.g, bg_color_.b, 0xFF);
-				SDL_RenderClear(mRenderer);
+				SDL_SetRenderDrawColor(renderer_, bg_color_.r, bg_color_.g, bg_color_.b, 0xFF);
+				SDL_RenderClear(renderer_);
 
 				// grab window identifiers
-				mWindowID = SDL_GetWindowID(mWindow);
-				mWindowDisplayID = SDL_GetWindowDisplayIndex(mWindow);
+				window_id_ = SDL_GetWindowID(sdl_window_);
 
 				// flag as opened
-				mShown = true;
+				shown_ = true;
 
         // initialize mirror functionality
-				mirror_.Init(config, &mInfo);
+				mirror_.Init(config, &info_);
 
 				// initialize circle component
-				circle_.Init(config, mRenderer, mEndTicks);
+				circle_.Init(config, renderer_, end_ticks_);
 
 				// initialize counter component
-				counter_.Init(config, mRenderer, mEndTicks);
+				counter_.Init(config, renderer_, end_ticks_);
 			} else {
-				printf("Could not create renderer. SDL Error: %s\n", SDL_GetError());
-				SDL_DestroyWindow(mWindow);
-				mWindow = NULL;
+				std::cerr << "Could not create renderer. SDL Error: " << SDL_GetError() << "\n";
+				SDL_DestroyWindow(sdl_window_);
+				sdl_window_ = NULL;
 			}
 		} else {
-			printf("Could not get window information. SDL Error: %s\n", SDL_GetError());
+			std::cerr << "Could not get window information. SDL Error: " << SDL_GetError() << "\n";
 		}
 	} else {
-		printf("Could not create window. SDL Error: %s\n", SDL_GetError());
+		std::cerr << "Could not create window. SDL Error: " << SDL_GetError() << "\n";
 	}
 
-	return mWindow != NULL && mRenderer != NULL;
+	return sdl_window_ != NULL && renderer_ != NULL;
 }
 
-void Window::handleEvent(SDL_Event& e) {
-	// TODO: stuff
-	bool updateCaption = false;
-
-	if (e.type == SDL_WINDOWEVENT && e.window.windowID == mWindowID) {
+void Window::HandleEvent(SDL_Event& e) {
+	if (e.type == SDL_WINDOWEVENT && e.window.windowID == window_id_) {
 		switch (e.window.event) {
-			case SDL_WINDOWEVENT_MOVED:
-				mWindowDisplayID = SDL_GetWindowDisplayIndex(mWindow);
-				updateCaption = true;
-				break;
-
 			case SDL_WINDOWEVENT_SHOWN:
-				mShown = true;
+				shown_ = true;
 				break;
 
 			case SDL_WINDOWEVENT_HIDDEN:
-				mShown = false;
+				shown_ = false;
 				break;
 
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				mWidth = e.window.data1;
-				mHeight = e.window.data2;
 				// repaint
-				SDL_RenderPresent(mRenderer);
+				SDL_RenderPresent(renderer_);
 				break;
 
 			case SDL_WINDOWEVENT_EXPOSED:
 				// repaint
-				SDL_RenderPresent(mRenderer);
-				break;
-
-			// mouse enter
-			case SDL_WINDOWEVENT_ENTER:
-				mMouseFocus = true;
-				updateCaption = true;
-				break;
-
-			// mouse exit
-			case SDL_WINDOWEVENT_LEAVE:
-				mMouseFocus = false;
-				updateCaption = true;
-				break;
-
-			case SDL_WINDOWEVENT_FOCUS_GAINED:
-				mKeyboardFocus = true;
-				updateCaption = true;
-				break;
-
-			case SDL_WINDOWEVENT_FOCUS_LOST:
-				mKeyboardFocus = false;
-				updateCaption = true;
-				break;
-
-			case SDL_WINDOWEVENT_MINIMIZED:
-				mMinimized = true;
-				break;
-
-			case SDL_WINDOWEVENT_MAXIMIZED:
-				mMinimized = false;
-				break;
-
-			case SDL_WINDOWEVENT_RESTORED:
-				mMinimized = false;
+				SDL_RenderPresent(renderer_);
 				break;
 
 			case SDL_WINDOWEVENT_CLOSE:
 				// hide on close
-				SDL_HideWindow(mWindow);
+				SDL_HideWindow(sdl_window_);
 				break;
 		}
-	} else if (e.type == SDL_KEYDOWN) {
-		// display change flag
-		bool switchDisplay = false;
-
-		switch (e.key.keysym.sym) {
-			case SDLK_UP:
-				++mWindowDisplayID;
-				switchDisplay = true;
-				break;
-
-			case SDLK_DOWN:
-				--mWindowDisplayID;
-				switchDisplay = true;
-				break;
-		}
-
-		int totalDisplays = SDL_GetNumVideoDisplays();
-
-		if (switchDisplay) {
-			// display needs to be updated
-			if (mWindowDisplayID < 0) {
-				mWindowDisplayID = totalDisplays - 1;
-			} else if (mWindowDisplayID >= totalDisplays) {
-				mWindowDisplayID = 0;
-			}
-
-			// get bounds of each display
-			SDL_Rect *displayBounds = NULL;
-			displayBounds = new SDL_Rect[totalDisplays];
-			for (int i = 0; i < totalDisplays; ++i) {
-				SDL_GetDisplayBounds(i, &displayBounds[i]);
-			}
-
-			// move window to center of next display
-			SDL_SetWindowPosition(mWindow,
-					displayBounds[mWindowDisplayID].x + (displayBounds[mWindowDisplayID].w - mWidth) / 2,
-					displayBounds[mWindowDisplayID].y + (displayBounds[mWindowDisplayID].h - mHeight) / 2);
-			updateCaption = true;
-		}
-	}
-
-	if (updateCaption) {
-		// SDL_SetWindowTitle(mWindow, "Morjesta.");
 	}
 }
 
-void Window::focus() {
+void Window::Focus() {
 	// restore window if needed
-	if (!mShown) {
-		SDL_ShowWindow(mWindow);
+	if (!shown_) {
+		SDL_ShowWindow(sdl_window_);
 	}
 
 	// move window forward
-	SDL_RaiseWindow(mWindow);
+	SDL_RaiseWindow(sdl_window_);
 }
 
-void Window::render() {
-	// if (!mMinimized) {
+int Window::Render() {
 	Uint32 ticks_now = SDL_GetTicks();
 
-	// clear screen
-	SDL_SetRenderDrawColor(mRenderer, bg_color_.r, bg_color_.g, bg_color_.b, 0xFF);
-	SDL_RenderClear(mRenderer);
+	// render only when the window is not minimized to avoid some bugs
+	if (!minimized_) {
 
-	counter_.Render(ticks_now);
-	circle_.Render(ticks_now);
+		// clear screen
+		SDL_SetRenderDrawColor(renderer_, bg_color_.r, bg_color_.g, bg_color_.b, 0xFF);
+		SDL_RenderClear(renderer_);
 
-	// update screen
-	SDL_RenderPresent(mRenderer);
+		// draw counter
+		counter_.Render(ticks_now);
 
-  // mirror to another display, drawing directly on screen
-	mirror_.Draw();
+		// draw progress circle
+		circle_.Render(ticks_now);
 
-  // update counter and its texture if necessary
-	counter_.Update();
-}
+		// update screen
+		SDL_RenderPresent(renderer_);
 
-void Window::free() {
-	if (mWindow != NULL) {
-		SDL_DestroyWindow(mWindow);
+		// mirror to another display, drawing directly on screen
+		mirror_.Draw();
+
+		// update counter and its texture if necessary
+		counter_.Update();
 	}
 
-	mMouseFocus = false;
-	mKeyboardFocus = false;
-	mWidth = 0;
-	mHeight = 0;
+ 	int end_duration = config_->circle_end_duration();
+	if (ticks_now > end_ticks_ + end_duration) {
+		// countdown finished
+		return -1;
+	}
+	return 0;
 }
 
-int Window::getWidth() {
-	return mWidth;
-}
-
-int Window::getHeight() {
-	return mHeight;
-}
-
-bool Window::hasMouseFocus() {
-	return mMouseFocus;
-}
-
-bool Window::hasKeyboardFocus() {
-	return mKeyboardFocus;
-}
-
-bool Window::isMinimized() {
-	return mMinimized;
-}
-
-bool Window::isShown() {
-	return mShown;
+void Window::Free() {
+	if (sdl_window_ != NULL) {
+		SDL_DestroyWindow(sdl_window_);
+	}
 }

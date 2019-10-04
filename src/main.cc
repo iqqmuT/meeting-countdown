@@ -1,5 +1,4 @@
 #include <getopt.h>
-#include <stdio.h>
 #ifdef _WIN32
 	#include <windows.h>
 #endif
@@ -14,30 +13,30 @@
 #include "window.h"
 
 Config config;
-Window gWindow;
+Window main_window;
 
-bool init(const char *cfgFile) {
+bool init(const char *cfg_file) {
 	bool success = true;
-	if (cfgFile != NULL) {
-		if (!config.parse(cfgFile)) {
-			printf("Parse error with '%s'\n", cfgFile);
+	if (cfg_file != NULL) {
+		if (!config.Parse(cfg_file)) {
+			std::cerr << "Parse error with " << cfg_file << "\n";
 			success = false;
 		}
 	}
 
 	// initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		printf("Could not initialize SDL. Error: %s\n", SDL_GetError());
+		std::cerr << "Could not initialize SDL. Error: " << SDL_GetError() << "\n";
 		success = false;
 	} else {
 		if (TTF_Init() < 0) {
-			printf("Could not initialize SDL_ttf. Error: %s\n", TTF_GetError());
+			std::cerr << "Could not initialize SDL_ttf. Error: " << TTF_GetError() << "\n";
 			success = false;
 		}
 
 		// create window
-		if (!gWindow.init(&config)) {
-			printf("Window could not be created!\n");
+		if (!main_window.Init(&config)) {
+			std::cerr << "Window could not be created!\n";
 			success = false;
 		}
 	}
@@ -47,41 +46,41 @@ bool init(const char *cfgFile) {
 
 void close() {
 	// destroy window
-	gWindow.free();
+	main_window.Free();
 
 	TTF_Quit();
 	SDL_Quit();
 }
 
 void printUsage(char* argv[]) {
-	fprintf(stderr, "Usage: %s [-c configfile] [-f fontfile] [-m minutes] [-t HH:MM]\n", argv[0]);
+	std::cerr << "Usage: " << argv[0] << " [-c configfile] [-f fontfile] [-m minutes] [-t HH:MM]\n";
 }
 
 int main(int argc, char* argv[]) {
 	int opt;
 	int mins = -1;
-	const char* cfgFile = NULL;
-	const char* fontFile = NULL;
-	const char* timeOpt = NULL;
+	const char* cfg_file = NULL;
+	const char* font_path = NULL;
+	const char* time_opt = NULL;
 	// "t:" means that -t option requires an argument
 	while ((opt = getopt(argc, argv, "t:c:m:f:")) != -1) {
 		switch (opt) {
 			case 'c':
-				cfgFile = optarg;
+				cfg_file = optarg;
 				break;
 
 			case 'f':
-				config.setCounterFontFile(optarg);
+				config.set_counter_font_path(optarg);
 				break;
 
 			case 'm':
 				mins = atoi(optarg);
-				config.setEndTimeSecs(mins * 60);
+				config.set_end_time_secs(mins * 60);
 				break;
 
 			case 't':
-				timeOpt = optarg;
-				config.setEndTimeStr(timeOpt);
+				time_opt = optarg;
+				config.set_end_time_str(time_opt);
 				break;
 
 			default:
@@ -90,12 +89,12 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	if (timeOpt == NULL && mins == -1) {
+	if (time_opt == NULL && mins == -1) {
 		// no time given
-		config.setEndTimeSecs();
+		config.set_end_time_secs();
 	}
 
-	if (init(cfgFile)) {
+	if (init(cfg_file)) {
 		bool quit = false;
 
 		SDL_Event e;
@@ -108,14 +107,17 @@ int main(int argc, char* argv[]) {
 				}
 
 				// handle window events
-				gWindow.handleEvent(e);
+				main_window.HandleEvent(e);
 			}
 
 			// update window
-			gWindow.render();
+			if (main_window.Render() < 0) {
+				// finished or error
+				quit = true;
+			}
 		}
 	} else {
-		printf("Initialization failed.\n");
+		std::cerr << "Initialization failed.\n";
 	}
 
 	// free resources and close SDL

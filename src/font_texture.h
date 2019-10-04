@@ -5,19 +5,21 @@ class FontTexture {
 	public:
 		FontTexture();
 		~FontTexture();
-		void setRenderer(SDL_Renderer *renderer);
-		bool loadFont(const char *fontPath, int size);
-		bool loadFromRenderedText(const char *text, SDL_Color color);
-		void free();
-		void closeFont();
-		void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-		int getWidth();
-		int getHeight();
+		void set_renderer(SDL_Renderer *renderer);
+		bool LoadFont(const char *font_path, int size);
+		bool LoadFromRenderedText(const char *text, SDL_Color color);
+		void Free();
+		void CloseFont();
+		void Render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0,
+		            SDL_Point* center = NULL,
+								SDL_RendererFlip flip = SDL_FLIP_NONE);
+		int width() { return width_; }
+		int height() { return height_; }
 
 	private:
-		SDL_Renderer* mRenderer;
-		SDL_Texture* mTexture;
-		TTF_Font* mFont;
-		int mWidth;
-		int mHeight;
+		SDL_Renderer* renderer_;
+		SDL_Texture* texture_;
+		TTF_Font* font_;
+		int width_;
+		int height_;
 };

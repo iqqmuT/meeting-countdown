@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 
-const char* SECTION_PROGRESS = "progress";
+const char* SECTION_CIRCLE = "circle";
 const char* SECTION_COUNTER = "counter";
 const char* SECTION_MIRROR = "mirror";
 
@@ -17,11 +17,11 @@ const char* DEFAULT_BACKGROUND_COLOR = "#000000";
 const int DEFAULT_WIDTH = 200;
 const int DEFAULT_HEIGHT = 200;
 
-const int DEFAULT_PROGRESS_WIDTH = 10;
-const char* DEFAULT_PROGRESS_COLOR = "#ffffff";
-const char* DEFAULT_PROGRESS_BG_COLOR = "#333333";
-const int DEFAULT_PROGRESS_DURATION_START = 1000;
-const int DEFAULT_PROGRESS_DURATION_END = 2000;
+const int DEFAULT_CIRCLE_WIDTH = 10;
+const char* DEFAULT_CIRCLE_COLOR = "#ffffff";
+const char* DEFAULT_CIRCLE_BG_COLOR = "#333333";
+const int DEFAULT_CIRCLE_DURATION_START = 1000;
+const int DEFAULT_CIRCLE_DURATION_END = 2000;
 
 // Default font in Windows: Segoe UI
 const char* DEFAULT_COUNTER_FONT_FILE = "C:\\Windows\\Fonts\\segoeui.ttf";
@@ -61,100 +61,100 @@ int convertHex(char c1, char c2) {
 }
 
 Config::Config() {
-	mParser = NULL;
+	parser_ = NULL;
 
 	// defaults
-	parseColorString(DEFAULT_BACKGROUND_COLOR, mBgColor);
-	mWidth = DEFAULT_WIDTH;
-	mHeight = DEFAULT_HEIGHT;
+	ParseColorString(DEFAULT_BACKGROUND_COLOR, bg_color_);
+	width_ = DEFAULT_WIDTH;
+	height_ = DEFAULT_HEIGHT;
 
-	mProgressWidth = DEFAULT_PROGRESS_WIDTH;
-	parseColorString(DEFAULT_PROGRESS_COLOR, mProgressColor);
-	parseColorString(DEFAULT_PROGRESS_BG_COLOR, mProgressBgColor);
-	mProgressStartDuration = DEFAULT_PROGRESS_DURATION_START;
-	mProgressEndDuration = DEFAULT_PROGRESS_DURATION_END;
+	circle_width_ = DEFAULT_CIRCLE_WIDTH;
+	ParseColorString(DEFAULT_CIRCLE_COLOR, circle_color_);
+	ParseColorString(DEFAULT_CIRCLE_BG_COLOR, circle_bg_color_);
+	circle_start_duration_ = DEFAULT_CIRCLE_DURATION_START;
+	circle_end_duration_ = DEFAULT_CIRCLE_DURATION_END;
 
-	mCounterFontFile = DEFAULT_COUNTER_FONT_FILE;
-	mCounterFontSize = DEFAULT_COUNTER_FONT_SIZE;
-	parseColorString(DEFAULT_COUNTER_COLOR, mCounterColor);
+	counter_font_path_ = DEFAULT_COUNTER_FONT_FILE;
+	counter_font_size_ = DEFAULT_COUNTER_FONT_SIZE;
+	ParseColorString(DEFAULT_COUNTER_COLOR, counter_color_);
 
-	mMirrorDisplay = DEFAULT_MIRROR_DISPLAY;
-	mMirrorLeft = DEFAULT_MIRROR_LEFT;
-	mMirrorRight = DEFAULT_MIRROR_RIGHT;
-	mMirrorTop = DEFAULT_MIRROR_TOP;
-	mMirrorBottom = DEFAULT_MIRROR_BOTTOM;
+	mirror_display_ = DEFAULT_MIRROR_DISPLAY;
+	mirror_left_ = DEFAULT_MIRROR_LEFT;
+	mirror_right_ = DEFAULT_MIRROR_RIGHT;
+	mirror_top_ = DEFAULT_MIRROR_TOP;
+	mirror_bottom_ = DEFAULT_MIRROR_BOTTOM;
 }
 
-bool Config::parse(const char* cfgFile) {
-	mParser = new INIReader(cfgFile);
-	int err = mParser->ParseError();
+bool Config::Parse(const char* cfgFile) {
+	parser_ = new INIReader(cfgFile);
+	int err = parser_->ParseError();
 	if (err < 0) {
 		return false;
 	}
 
 	bool success = true;
 
-	if (!parseColorVar("", "background-color", DEFAULT_BACKGROUND_COLOR, mBgColor)) {
+	if (!ParseColorVar("", "background-color", DEFAULT_BACKGROUND_COLOR, bg_color_)) {
 		success = false;
 	}
 
-	mWidth = mParser->GetInteger("", "width", DEFAULT_WIDTH);
-	mHeight = mParser->GetInteger("", "height", DEFAULT_HEIGHT);
+	width_ = parser_->GetInteger("", "width", DEFAULT_WIDTH);
+	height_ = parser_->GetInteger("", "height", DEFAULT_HEIGHT);
 
-	// [progress]
-	mProgressShow = mParser->GetBoolean(SECTION_PROGRESS, "show", true);
-	mProgressAnimate = mParser->GetBoolean(SECTION_PROGRESS, "animate", true);
-	mProgressWidth = mParser->GetInteger(SECTION_PROGRESS, "width", DEFAULT_PROGRESS_WIDTH);
+	// [circle]
+	circle_show_ = parser_->GetBoolean(SECTION_CIRCLE, "show", true);
+	circle_animate_ = parser_->GetBoolean(SECTION_CIRCLE, "animate", true);
+	circle_width_ = parser_->GetInteger(SECTION_CIRCLE, "width", DEFAULT_CIRCLE_WIDTH);
 
-	if (!parseColorVar(SECTION_PROGRESS, "color", DEFAULT_PROGRESS_COLOR, mProgressColor)) {
+	if (!ParseColorVar(SECTION_CIRCLE, "color", DEFAULT_CIRCLE_COLOR, circle_color_)) {
 		success = false;
 	}
 
-	if (!parseColorVar(SECTION_PROGRESS, "background-color", DEFAULT_PROGRESS_BG_COLOR, mProgressBgColor)) {
+	if (!ParseColorVar(SECTION_CIRCLE, "background-color", DEFAULT_CIRCLE_BG_COLOR, circle_bg_color_)) {
 		success = false;
 	}
 
-	mProgressEndDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-end", DEFAULT_PROGRESS_DURATION_END);
-	mProgressStartDuration = mParser->GetInteger(SECTION_PROGRESS, "duration-start", DEFAULT_PROGRESS_DURATION_START);
+	circle_end_duration_ = parser_->GetInteger(SECTION_CIRCLE, "duration-end", DEFAULT_CIRCLE_DURATION_END);
+	circle_start_duration_ = parser_->GetInteger(SECTION_CIRCLE, "duration-start", DEFAULT_CIRCLE_DURATION_START);
 
 	// [counter]
-	mCounterShow = mParser->GetBoolean(SECTION_COUNTER, "show", true);
-	if (!parseColorVar(SECTION_COUNTER, "color", DEFAULT_COUNTER_COLOR, mCounterColor)) {
+	counter_show_ = parser_->GetBoolean(SECTION_COUNTER, "show", true);
+	if (!ParseColorVar(SECTION_COUNTER, "color", DEFAULT_COUNTER_COLOR, counter_color_)) {
 		success = false;
 	}
-	mCounterFontFile = mParser->Get(SECTION_COUNTER, "font-file", DEFAULT_COUNTER_FONT_FILE);
-	mCounterFontSize = mParser->GetInteger(SECTION_COUNTER, "font-size", DEFAULT_COUNTER_FONT_SIZE);
-	mCounterFadeIn = mParser->GetInteger(SECTION_COUNTER, "fade-in", 300);
-	mCounterFadeOut = mParser->GetInteger(SECTION_COUNTER, "fade-out", 300);
+	counter_font_path_ = parser_->Get(SECTION_COUNTER, "font-file", DEFAULT_COUNTER_FONT_FILE);
+	counter_font_size_ = parser_->GetInteger(SECTION_COUNTER, "font-size", DEFAULT_COUNTER_FONT_SIZE);
+	counter_fade_in_ = parser_->GetInteger(SECTION_COUNTER, "fade-in", 300);
+	counter_fade_out_ = parser_->GetInteger(SECTION_COUNTER, "fade-out", 300);
 
 	// [mirror]
-	mMirrorDisplay = mParser->GetInteger(SECTION_MIRROR, "display", DEFAULT_MIRROR_DISPLAY);
-	mMirrorAlign = mParser->Get(SECTION_MIRROR, "align", "center");
-	mMirrorBottom = mParser->GetInteger(SECTION_MIRROR, "bottom", DEFAULT_MIRROR_BOTTOM);
-	mMirrorTop = mParser->GetInteger(SECTION_MIRROR, "top", DEFAULT_MIRROR_TOP);
-	mMirrorValign = mParser->Get(SECTION_MIRROR, "valign", "middle");
-	mMirrorLeft = mParser->GetInteger(SECTION_MIRROR, "left", DEFAULT_MIRROR_LEFT);
-	mMirrorRight = mParser->GetInteger(SECTION_MIRROR, "right", DEFAULT_MIRROR_RIGHT);
+	mirror_display_ = parser_->GetInteger(SECTION_MIRROR, "display", DEFAULT_MIRROR_DISPLAY);
+	mirror_align_ = parser_->Get(SECTION_MIRROR, "align", "center");
+	mirror_bottom_ = parser_->GetInteger(SECTION_MIRROR, "bottom", DEFAULT_MIRROR_BOTTOM);
+	mirror_top_ = parser_->GetInteger(SECTION_MIRROR, "top", DEFAULT_MIRROR_TOP);
+	mirror_valign_ = parser_->Get(SECTION_MIRROR, "valign", "middle");
+	mirror_left_ = parser_->GetInteger(SECTION_MIRROR, "left", DEFAULT_MIRROR_LEFT);
+	mirror_right_ = parser_->GetInteger(SECTION_MIRROR, "right", DEFAULT_MIRROR_RIGHT);
 
 	return success;
 }
 
 Config::~Config() {
-	if (mParser != NULL) {
-		delete mParser;
+	if (parser_ != NULL) {
+		delete parser_;
 	}
 }
 
-bool Config::parseColorVar(const char* section, const char* name, const char* def, Config::Color& color) {
-	std::string value = mParser->Get(section, name, def);
-	if (parseColorString(value.c_str(), color) < 0) {
+bool Config::ParseColorVar(const char* section, const char* name, const char* def, Config::Color& color) {
+	std::string value = parser_->Get(section, name, def);
+	if (ParseColorString(value.c_str(), color) < 0) {
 		std::cout << "Error parsing " << section << "." << name << ": Invalid format: " << value << "\n";
 		return false;
 	}
 	return true;
 }
 
-int Config::parseColorString(const char* value, Config::Color& color) {
+int Config::ParseColorString(const char* value, Config::Color& color) {
 	size_t len = strlen(value);
 	if (value[0] == '#' && len == 7) {
 		int v[3];
@@ -205,11 +205,11 @@ bool parseTime(const char* ts, int &hour, int &min) {
 	return true;
 }
 
-void Config::setEndTime(time_t endTime) {
-	mEndTime = endTime;
+void Config::set_end_time(time_t endTime) {
+	end_time_ = endTime;
 }
 
-void Config::setEndTimeStr(const char* endTime) {
+void Config::set_end_time_str(const char* endTime) {
 	// get current time so we have current date
 	time_t tNow = time(NULL);
 	struct tm* tmEnd = localtime(&tNow);
@@ -228,22 +228,22 @@ void Config::setEndTimeStr(const char* endTime) {
 		tmEnd->tm_min = min;
 		tmEnd->tm_sec = 0;
 
-		setEndTime(mktime(tmEnd));
+		set_end_time(mktime(tmEnd));
 	} else {
 		std::cout << "Error: could not parse " << endTime << "\n";
 	}
 }
 
-void Config::setEndTimeSecs(int secs) {
+void Config::set_end_time_secs(int secs) {
 	time_t t_now = time(NULL);
 	struct tm* tm_end = localtime(&t_now);
 	if (secs == 0) {
 		secs = DEFAULT_TIME_SECS;
 	}
 	tm_end->tm_sec += secs;
-	setEndTime(mktime(tm_end));
+	set_end_time(mktime(tm_end));
 }
 
-void Config::setCounterFontFile(const char* font_path) {
-	mCounterFontFile = font_path;
+void Config::set_counter_font_path(const char* font_path) {
+	counter_font_path_ = font_path;
 }
