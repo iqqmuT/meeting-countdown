@@ -2,9 +2,13 @@
 
 [![Build Status](https://travis-ci.org/iqqmuT/meeting-countdown.svg?branch=master)](https://travis-ci.org/iqqmuT/meeting-countdown)
 
+## Download
+
+Download latest [meeting-countdown.exe](https://github.com/iqqmuT/meeting-countdown/releases/latest/download/meeting-countdown.exe).
+
 ## Usage
 
-To see usage, run:
+You can double click the exe to run it with defaults or to see command line usage, run:
 ```
 meeting-countdown.exe -h
 ```
