@@ -21,14 +21,14 @@ const int DEFAULT_CIRCLE_WIDTH = 10;
 const char* DEFAULT_CIRCLE_COLOR = "#ffffff";
 const char* DEFAULT_CIRCLE_BG_COLOR = "#333333";
 const int DEFAULT_CIRCLE_DURATION_START = 1000;
-const int DEFAULT_CIRCLE_DURATION_END = 2000;
+const int DEFAULT_CIRCLE_DURATION_END = 1500;
 
 // Default font in Windows: Segoe UI
 const char* DEFAULT_COUNTER_FONT_FILE = "C:\\Windows\\Fonts\\segoeui.ttf";
 const char* DEFAULT_COUNTER_COLOR = "#ffffff";
 const int DEFAULT_COUNTER_FONT_SIZE = 40;
-const int DEFAULT_COUNTER_FADE_IN = 250;
-const int DEFAULT_COUNTER_FADE_OUT = 250;
+const int DEFAULT_COUNTER_FADE_IN = 200;
+const int DEFAULT_COUNTER_FADE_OUT = 200;
 
 const int DEFAULT_MIRROR_DISPLAY = 2;
 const int DEFAULT_MIRROR_TOP = -1;
@@ -244,7 +244,8 @@ void Config::set_end_time_secs(int secs) {
 	if (secs == 0) {
 		secs = DEFAULT_TIME_SECS;
 	}
-	tm_end->tm_sec += secs;
+	// add extra second so beginning numbers look better
+	tm_end->tm_sec += secs + 1;
 	set_end_time(mktime(tm_end));
 }
 

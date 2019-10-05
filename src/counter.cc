@@ -13,6 +13,7 @@ bool Counter::Init(Config* config, SDL_Renderer* renderer, Uint32 ticks_finish) 
   ticks_finish_ = ticks_finish;
   ticks_now_ = 0;
   seconds_left_ = -1;
+  alpha_is_full_ = false;
   is_zero_ = false;
 
   // get values from config
@@ -30,16 +31,28 @@ bool Counter::Init(Config* config, SDL_Renderer* renderer, Uint32 ticks_finish) 
 }
 
 void Counter::RenderPre() {
+  int start_duration = config_->circle_start_duration();
+  int duration = config_->counter_fade_in();
+	float progress = (float) (ticks_now_ - start_duration) / duration;
+	// use easing in fading
+	progress = CubicEaseIn(progress);
+  font_texture_.SetAlpha(progress * 0xFF);
+  font_texture_.Render(x_, y_);
 }
 
 void Counter::RenderProgress() {
+  if (alpha_is_full_ == false) {
+    // full alpha
+    font_texture_.SetAlpha(0xFF);
+    alpha_is_full_ = true;
+  }
   font_texture_.Render(x_, y_);
 }
 
 void Counter::RenderPost() {
   int duration = config_->counter_fade_out();
 	float progress = (float) (ticks_now_ - ticks_finish_) / duration;
-	// use easing in animation
+	// use easing in fading
 	progress = CubicEaseIn(progress);
   font_texture_.SetAlpha((1 - progress) * 0xFF);
   font_texture_.Render(x_, y_);
@@ -48,12 +61,14 @@ void Counter::RenderPost() {
 void Counter::Render(Uint32 ticks_now) {
   ticks_now_ = ticks_now;
   int start_duration = config_->circle_start_duration();
-  int end_duration = config_->counter_fade_out();
-	if (ticks_now_ < start_duration) {
-		RenderPre();
+  int fade_in_duration = config_->counter_fade_in();
+  int fade_out_duration = config_->counter_fade_out();
+  if (ticks_now_ < start_duration) {
+  } else if (ticks_now_ < start_duration + fade_in_duration) {
+    RenderPre();
   } else if (ticks_now_ < ticks_finish_) {
     RenderProgress();
-  } else if (ticks_now_ < ticks_finish_ + end_duration) {
+  } else if (ticks_now_ < ticks_finish_ + fade_out_duration) {
 		RenderPost();
   }
 }

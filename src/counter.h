@@ -26,6 +26,7 @@ private:
   int x_;
   int y_;
   int seconds_left_;
+  bool alpha_is_full_;
   bool is_zero_;
 };
 

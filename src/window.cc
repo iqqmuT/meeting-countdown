@@ -30,11 +30,6 @@ bool Window::Init(Config* config) {
 	int width = config->width();
 	int height = config->height();
 
-	// init ticks
-	start_ticks_ = SDL_GetTicks();
-	time_t diff = config->end_time() - time(NULL);
-	end_ticks_ = start_ticks_ + (diff * 1000);
-
 	sdl_window_ = SDL_CreateWindow("Countdown", SDL_WINDOWPOS_UNDEFINED,
 	                           SDL_WINDOWPOS_UNDEFINED, width, height,
 														 SDL_WINDOW_SHOWN);
@@ -54,6 +49,12 @@ bool Window::Init(Config* config) {
 
 				// flag as opened
 				shown_ = true;
+
+				// init ticks
+				start_ticks_ = SDL_GetTicks();
+				time_t diff = config->end_time() - time(NULL);
+
+				end_ticks_ = start_ticks_ + (diff * 1000);
 
         // initialize mirror functionality
 				mirror_.Init(config, &info_);
