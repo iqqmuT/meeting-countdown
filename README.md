@@ -2,7 +2,7 @@
 
 # Countdown clock for meetings
 
-[![Build Status](https://travis-ci.org/iqqmuT/meeting-countdown.svg?branch=master)](https://travis-ci.org/iqqmuT/meeting-countdown)
+[![Build Status](https://travis-ci.org/iqqmuT/meeting-countdown.svg?branch=master)](https://travis-ci.org/iqqmuT/meeting-countdown) [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 ## Download
 
@@ -22,17 +22,17 @@ but you can start it by clicking **More info** and **Run anyway**.
 
 Countdown to 14:45 (2:45 PM):
 ```
-meeting-countdown.exe -t 14:45
+meeting-countdown.exe --time 14:45
 ```
 
-Countdown to 18:30 (6:30 PM), using configuration file `countdown.ini`:
+Countdown to 18:30 (6:30 PM), using INI file `countdown.ini`:
 ```
-meeting-countdown.exe -t 18:30 -c countdown.ini
+meeting-countdown.exe --time 18:30 --ini countdown.ini
 ```
 
 5 minute countdown, using Comic Sans font:
 ```
-meeting-countdown.exe -m 5 -f C:\Windows\Fonts\comic.ttf
+meeting-countdown.exe --min 5 --font C:\Windows\Fonts\comic.ttf
 ```
 
 ### Sample INI file
