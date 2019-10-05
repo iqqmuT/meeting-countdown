@@ -24,7 +24,9 @@ public:
 
 	Color bg_color() { return bg_color_; }
 	int width() { return width_; }
+	void set_width(int width);
 	int height() { return height_; }
+	void set_height(int height);
 	bool circle_show() { return circle_show_; }
 	bool circle_animate() { return circle_animate_; }
 	int circle_width() { return circle_width_; }
@@ -38,6 +40,7 @@ public:
 	const char* counter_font_path() { return counter_font_path_.c_str(); }
 	void set_counter_font_path(const char* font_path);
 	int counter_font_size() { return counter_font_size_; }
+	void set_counter_font_size(int size);
 	int counter_fade_in() { return counter_fade_in_; }
 	int counter_fade_out() { return counter_fade_out_; }
 

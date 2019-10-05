@@ -149,6 +149,18 @@ Config::~Config() {
 	}
 }
 
+void Config::set_width(int width) {
+	width_ = width;
+}
+
+void Config::set_height(int height) {
+	height_ = height;
+}
+
+void Config::set_counter_font_size(int size) {
+	counter_font_size_ = size;
+}
+
 bool Config::ParseColorVar(const char* section, const char* name, const char* def, Config::Color& color) {
 	std::string value = parser_->Get(section, name, def);
 	if (ParseColorString(value.c_str(), color) < 0) {
@@ -176,7 +188,7 @@ int Config::ParseColorString(const char* value, Config::Color& color) {
 	return -1;
 }
 
-bool parseTime(const char* ts, int &hour, int &min) {
+bool ParseTime(const char* ts, int &hour, int &min) {
 	char h[3] = { 0, 0, 0 };
 	char m[3] = { 0, 0, 0 };
 	bool isPM = false;
@@ -220,7 +232,7 @@ void Config::set_end_time_str(const char* endTime) {
 
 	int hour = 0;
 	int min = 0;
-	if (parseTime(endTime, hour, min)) {
+	if (ParseTime(endTime, hour, min)) {
 		int nowHours = tmEnd->tm_hour * 100 + tmEnd->tm_min;
 		int endHours = hour * 100 + min;
 		if (endHours <= nowHours) {

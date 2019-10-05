@@ -1,7 +1,4 @@
 #include <getopt.h>
-#ifdef _WIN32
-	#include <windows.h>
-#endif
 
 #include <iostream>
 
@@ -15,7 +12,10 @@
 Config config;
 Window main_window;
 
-bool init(const char *cfg_file) {
+const char* cfg_file = NULL;
+
+
+bool Init(const char *cfg_file) {
 	bool success = true;
 	if (cfg_file != NULL) {
 		if (!config.Parse(cfg_file)) {
@@ -44,7 +44,7 @@ bool init(const char *cfg_file) {
 	return success;
 }
 
-void close() {
+void Close() {
 	// destroy window
 	main_window.Free();
 
@@ -52,25 +52,47 @@ void close() {
 	SDL_Quit();
 }
 
-void printUsage(char* argv[]) {
-	std::cerr << "Usage: " << argv[0] << " [-c configfile] [-f fontfile] [-m minutes] [-t HH:MM]\n";
+void PrintUsage(char* argv[]) {
+	std::string cmd = argv[0];
+	std::string usg = "Usage: " + cmd + " [OPTIONS]...\n";
+	usg += "\n";
+	usg += "  -i, --ini=INI_FILE\n";
+	usg += "      --font=FONT_FILE\n";
+	usg += "      --font-size=FONT_SIZE\n";
+	usg += "  -m, --min=MINUTES\n";
+	usg += "  -s, --size=SIZE\n";
+	usg += "  -t, --time=HH:MM\n";
+	std::cerr << usg;
 }
 
-int main(int argc, char* argv[]) {
-	int opt;
+int ParseArgs(int argc, char* argv[]) {
+	static struct option long_options[] = {
+		{"ini",       required_argument, 0, 'i'},
+		{"font",      required_argument, 0, 'f'},
+		{"font-size", required_argument, 0, 'x'},
+		{"min",       required_argument, 0, 'm'},
+		{"size",      required_argument, 0, 's'},
+		{"time",      required_argument, 0, 't'},
+		{0,           0,                 0, 0},
+	};
+
+	int c;
 	int mins = -1;
-	const char* cfg_file = NULL;
-	const char* font_path = NULL;
+	int size;
 	const char* time_opt = NULL;
-	// "t:" means that -t option requires an argument
-	while ((opt = getopt(argc, argv, "t:c:m:f:")) != -1) {
-		switch (opt) {
-			case 'c':
+	while (true) {
+		int option_index = 0;
+		c = getopt_long(argc, argv, "i:m:s:t:", long_options, &option_index);
+		if (c == -1) {
+			break;
+		}
+		switch (c) {
+			case 'i':
 				cfg_file = optarg;
 				break;
 
 			case 'f':
-				config.set_counter_font_path(optarg);
+			  config.set_counter_font_path(optarg);
 				break;
 
 			case 'm':
@@ -78,13 +100,24 @@ int main(int argc, char* argv[]) {
 				config.set_end_time_secs(mins * 60);
 				break;
 
+			case 's':
+			  size = atoi(optarg);
+				config.set_width(size);
+				config.set_height(size);
+				break;
+
 			case 't':
 				time_opt = optarg;
 				config.set_end_time_str(time_opt);
 				break;
 
+			case 'x':
+			  size = atoi(optarg);
+			  config.set_counter_font_size(size);
+				break;
+
 			default:
-				printUsage(argv);
+				PrintUsage(argv);
 				exit(EXIT_FAILURE);
 		}
 	}
@@ -93,14 +126,20 @@ int main(int argc, char* argv[]) {
 		// no time given
 		config.set_end_time_secs();
 	}
+}
 
+int main(int argc, char* argv[]) {
+	ParseArgs(argc, argv);
+
+	std::string txt = "Meeting Countdown";
 #ifdef VERSION
-  std::cout << "Meeting Countdown " << VERSION << "\n";
-#else
-  std::cout << "Meeting Countdown\n";
+  txt += " ";
+	txt += VERSION;
 #endif
+  txt += " https://github.com/iqqmuT/meeting-countdown\n";
+  std::cout << txt;
 
-	if (init(cfg_file)) {
+	if (Init(cfg_file)) {
 		bool quit = false;
 
 		SDL_Event e;
@@ -127,7 +166,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// free resources and close SDL
-	close();
+	Close();
 
 	return 0;
 }
